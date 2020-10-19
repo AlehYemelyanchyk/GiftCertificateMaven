@@ -31,8 +31,8 @@ public final class DAOUtils {
                     resultSet.getString("name"),
                     resultSet.getString("description"),
                     resultSet.getDouble("price"),
-                    LocalDateTime.parse(resultSet.getString("create_date"), DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                    LocalDateTime.parse(resultSet.getString("last_update_date"), DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                    LocalDateTime.parse(resultSet.getString("create_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                    LocalDateTime.parse(resultSet.getString("last_update_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME),
                     resultSet.getInt("duration"));
             certificates.add(tempCertificate);
         }

@@ -171,10 +171,6 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
         return returnObject;
     }
 
-    private String formatDate() {
-        return ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-    }
-
     @Override
     public GiftCertificate update(GiftCertificate object) throws DAOException {
         GiftCertificate returnObject;
@@ -222,5 +218,9 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
+    }
+
+    private String formatDate() {
+        return ZonedDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 }
