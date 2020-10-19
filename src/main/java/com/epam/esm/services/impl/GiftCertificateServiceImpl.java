@@ -36,6 +36,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
+    public List<GiftCertificate> findByPartNameDescription(String part) throws ServiceException {
+        try {
+            return giftCertificateDAO.findByPartNameDescription(part);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
     public List<GiftCertificate> findAllGiftCertificatesByTagName(String name) throws ServiceException {
         try {
             return giftCertificateDAO.findAllGiftCertificatesByTagName(name);

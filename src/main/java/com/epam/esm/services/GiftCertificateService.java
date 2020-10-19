@@ -9,5 +9,7 @@ import java.util.Optional;
 public interface GiftCertificateService extends CrudService<GiftCertificate, Long> {
     Optional<GiftCertificate> findByName(String name) throws ServiceException;
 
+    List<GiftCertificate> findByPartNameDescription(String part) throws ServiceException;
+
     List<GiftCertificate> findAllGiftCertificatesByTagName(String name) throws ServiceException;
 }

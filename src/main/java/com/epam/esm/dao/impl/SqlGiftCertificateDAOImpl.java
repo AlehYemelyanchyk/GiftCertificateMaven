@@ -27,6 +27,10 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
 
     private static final String FIND_ALL_SQL_QUERY = "SELECT * FROM gift_certificates.certificates";
     private static final String FIND_BY_NAME_SQL_QUERY = "SELECT * FROM gift_certificates.certificates WHERE name = ?";
+    private static final String FIND_BY_PART_NAME_DESCRIPTION_SQL_QUERY =
+            "SELECT a.id, a.name, a.description, a.price, a.create_date, a.last_update_date, a.duration " +
+                    "FROM gift_certificates.certificates as a " +
+                    "WHERE a.name LIKE ? OR a.description LIKE ?";
     private static final String FIND_BY_ID_SQL_QUERY = "SELECT * FROM gift_certificates.certificates WHERE id = ?";
     private static final String FIND_ALL_GIFT_CERTIFICATES_BY_NAME_SQL_QUERY =
             "SELECT a.id, a.name, a.description, a.price, a.create_date, a.last_update_date, a.duration " +
@@ -78,6 +82,24 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
             throw new DAOException(e);
         }
         return returnObject;
+    }
+
+    @Override
+    public List<GiftCertificate> findByPartNameDescription(String part) throws DAOException {
+        List<GiftCertificate> returnList;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_BY_PART_NAME_DESCRIPTION_SQL_QUERY);
+        ) {
+            statement.setString(1, "%"+part+"%");
+            statement.setString(2, "%"+part+"%");
+            try (ResultSet resultSet = statement.executeQuery()) {
+                returnList = DAOUtils.giftCertificatesListResultSetHandle(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+        return returnList;
     }
 
     @Override

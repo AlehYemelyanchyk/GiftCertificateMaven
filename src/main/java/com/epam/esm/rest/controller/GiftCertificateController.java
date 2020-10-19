@@ -75,6 +75,21 @@ public class GiftCertificateController {
         return returnObject;
     }
 
+    @GetMapping("/certificates/searchBy")
+    public List<GiftCertificate> searchBy(@RequestParam("part") String part) {
+        List<GiftCertificate> returnObject;
+        try {
+            returnObject = giftCertificateService.findByPartNameDescription(part);
+        } catch (ServiceException e) {
+            LOGGER.error("findByName error: " + e.getMessage());
+            throw new RuntimeException();
+        }
+        if (returnObject.isEmpty()) {
+            throw new ResourceNotFoundException("Certificate (name = " + part + ") not found.");
+        }
+        return returnObject;
+    }
+
     @GetMapping("/certificates/findByTagName")
     public List<GiftCertificate> findByTagName(@RequestParam("name") String name) {
         List<GiftCertificate> returnObject;
@@ -89,7 +104,7 @@ public class GiftCertificateController {
 
     @PutMapping("/certificates")
     public GiftCertificate updateCertificate(@RequestBody GiftCertificate giftCertificate) {
-        GiftCertificate returnObject = null;
+        GiftCertificate returnObject;
 
         try {
             returnObject = giftCertificateService.update(giftCertificate);
@@ -102,16 +117,6 @@ public class GiftCertificateController {
         }
         return returnObject;
     }
-
-//    @DeleteMapping("/certificates")
-//    public void delete(@RequestBody GiftCertificate giftCertificate) {
-//        try {
-//            giftCertificateService.delete(giftCertificate);
-//        } catch (ServiceException e) {
-//            LOGGER.error("delete error: " + e.getMessage());
-//            throw new ResourceNotFoundException("Tag (tag = " + giftCertificate.getName() + ") not found.");
-//        }
-//    }
 
     @DeleteMapping("/certificates/{id}")
     public void deleteById(@PathVariable Long id) {
