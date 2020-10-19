@@ -20,12 +20,6 @@
     <artifactId>gift-certificate-data</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
         <!-- MySql connector -->
         <dependency>
             <groupId>mysql</groupId>
