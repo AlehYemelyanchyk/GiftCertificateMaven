@@ -1,5 +1,6 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.Constants;
 import com.epam.esm.dao.TagDAO;
 import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.Tag;
@@ -23,14 +24,6 @@ public class SqlTagDAOImpl implements TagDAO {
     private static final Logger LOGGER = LogManager.getLogger();
     private final BasicDataSource dataSource;
 
-    private static final String FIND_ALL_SQL_QUERY = "SELECT * FROM gift_certificates.tags";
-    private static final String FIND_BY_NAME_SQL_QUERY = "SELECT * FROM gift_certificates.tags WHERE name = ?";
-    private static final String FIND_BY_ID_SQL_QUERY = "SELECT * FROM gift_certificates.tags WHERE id = ?";
-    private static final String SAVE_SQL_QUERY = "INSERT INTO gift_certificates.tags (name) VALUES (?)";
-    private static final String UPDATE_SQL_QUERY = "UPDATE gift_certificates.tags SET name = ? WHERE id = ?";
-    private static final String DELETE_BY_NAME_SQL_QUERY = "DELETE FROM gift_certificates.tags WHERE name = ?";
-    private static final String DELETE_BY_ID_SQL_QUERY = "DELETE FROM gift_certificates.tags WHERE id = ?";
-
     @Autowired
     public SqlTagDAOImpl(BasicDataSource dataSource) {
         this.dataSource = dataSource;
@@ -41,7 +34,7 @@ public class SqlTagDAOImpl implements TagDAO {
         List<Tag> returnList;
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_ALL_SQL_QUERY);
+             PreparedStatement statement = connection.prepareStatement(Constants.FIND_ALL_TAGS_SQL_QUERY);
         ) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 returnList = DAOUtils.tagsListResultSetHandle(resultSet);
@@ -57,7 +50,7 @@ public class SqlTagDAOImpl implements TagDAO {
         Optional<Tag> returnObject;
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_SQL_QUERY);
+             PreparedStatement statement = connection.prepareStatement(Constants.FIND_TAGS_BY_ID_SQL_QUERY);
         ) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -75,7 +68,7 @@ public class SqlTagDAOImpl implements TagDAO {
         Optional<Tag> returnObject;
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_BY_NAME_SQL_QUERY)
+             PreparedStatement statement = connection.prepareStatement(Constants.FIND_TAGS_BY_NAME_SQL_QUERY)
         ) {
             statement.setString(1, name);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -94,8 +87,8 @@ public class SqlTagDAOImpl implements TagDAO {
 
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
-            try (PreparedStatement statementSave = connection.prepareStatement(SAVE_SQL_QUERY);
-                 PreparedStatement statementFindByName = connection.prepareStatement(FIND_BY_NAME_SQL_QUERY)
+            try (PreparedStatement statementSave = connection.prepareStatement(Constants.SAVE_TAGS_SQL_QUERY);
+                 PreparedStatement statementFindByName = connection.prepareStatement(Constants.FIND_TAGS_BY_NAME_SQL_QUERY)
             ) {
                 statementSave.setString(1, object.getName());
                 statementSave.executeUpdate();
@@ -119,16 +112,22 @@ public class SqlTagDAOImpl implements TagDAO {
 
     @Override
     public Optional<Tag> update(Tag object) throws DAOException {
-        Optional<Tag> returnObject = null;
+        Optional<Tag> returnObject;
 
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL_QUERY);
+            try (
+                    PreparedStatement statement1 = connection.prepareStatement(Constants.UPDATE_TAGS_SQL_QUERY);
+                    PreparedStatement statement2 = connection.prepareStatement(Constants.FIND_TAGS_BY_ID_SQL_QUERY)
             ) {
-                statement.setString(1, object.getName());
-                statement.setInt(2, object.getId());
-                statement.executeUpdate();
-//                returnObject = object;
+                statement1.setString(1, object.getName());
+                statement1.setInt(2, object.getId());
+                statement1.executeUpdate();
+                statement2.setInt(1, object.getId());
+                try (ResultSet resultSet = statement2.executeQuery()) {
+                    returnObject = DAOUtils.tagsListResultSetHandle(resultSet).stream()
+                            .findFirst();
+                }
             } catch (SQLException e) {
                 connection.rollback();
                 LOGGER.error("update transaction failed error: " + e.getMessage());
@@ -145,7 +144,7 @@ public class SqlTagDAOImpl implements TagDAO {
     @Override
     public void delete(Tag object) throws DAOException {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(DELETE_BY_NAME_SQL_QUERY);
+             PreparedStatement statement = connection.prepareStatement(Constants.DELETE_TAGS_BY_NAME_SQL_QUERY);
         ) {
             statement.setString(1, object.getName());
             statement.executeUpdate();
@@ -157,7 +156,7 @@ public class SqlTagDAOImpl implements TagDAO {
     @Override
     public void deleteById(Integer id) throws DAOException {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(DELETE_BY_ID_SQL_QUERY);
+             PreparedStatement statement = connection.prepareStatement(Constants.DELETE_TAGS_BY_ID_SQL_QUERY);
         ) {
             statement.setInt(1, id);
             statement.executeUpdate();
