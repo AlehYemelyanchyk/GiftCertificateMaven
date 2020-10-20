@@ -8,21 +8,21 @@ import java.util.Objects;
 
 @Component
 public class GiftCertificate implements Serializable {
-    private static final long serialVersionUID = 1724820758632935338L;
+    private static final Long serialVersionUID = 1724820758632935338L;
 
-    private long id;
+    private Long id;
     private String name;
     private String description;
-    private double price;
+    private Double price;
     private LocalDateTime createDate;
     private LocalDateTime lastUpdateDate;
-    private int duration;
+    private Integer duration;
 
     public GiftCertificate() {
     }
 
-    public GiftCertificate(String name, String description, double price,
-                           LocalDateTime createDate, LocalDateTime lastUpdateDate, int duration) {
+    public GiftCertificate(String name, String description, Double price,
+                           LocalDateTime createDate, LocalDateTime lastUpdateDate, Integer duration) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -31,8 +31,8 @@ public class GiftCertificate implements Serializable {
         this.duration = duration;
     }
 
-    public GiftCertificate(long id, String name, String description, double price,
-                           LocalDateTime createDate, LocalDateTime lastUpdateDate, int duration) {
+    public GiftCertificate(Long id, String name, String description, Double price,
+                           LocalDateTime createDate, LocalDateTime lastUpdateDate, Integer duration) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -42,11 +42,11 @@ public class GiftCertificate implements Serializable {
         this.duration = duration;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -66,11 +66,11 @@ public class GiftCertificate implements Serializable {
         this.description = description;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -90,11 +90,11 @@ public class GiftCertificate implements Serializable {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 

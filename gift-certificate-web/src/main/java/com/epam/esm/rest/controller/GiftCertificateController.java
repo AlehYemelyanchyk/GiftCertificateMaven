@@ -1,7 +1,6 @@
 package com.epam.esm.rest.controller;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.model.CertificateUpdateParametersHolder;
 import com.epam.esm.rest.exceptions.ResourceNotFoundException;
 import com.epam.esm.services.GiftCertificateService;
 import com.epam.esm.services.exceptions.ServiceException;
@@ -108,22 +107,22 @@ public class GiftCertificateController {
     }
 
     @PutMapping("/certificates")
-    public GiftCertificate updateCertificate(@RequestParam Integer id,
+    public GiftCertificate updateCertificate(@RequestParam Long id,
                                              @RequestParam Optional<String> name,
                                              @RequestParam Optional<String> description,
                                              @RequestParam Optional<Double> price,
                                              @RequestParam Optional<Integer> duration) {
         GiftCertificate returnObject;
-        CertificateUpdateParametersHolder certificateUpdateParametersHolder = new CertificateUpdateParametersHolder();
-        certificateUpdateParametersHolder.setId(id);
-        certificateUpdateParametersHolder.setName(name.orElse(null));
-        certificateUpdateParametersHolder.setDescription(description.orElse(null));
-        certificateUpdateParametersHolder.setPrice(price.orElse(null));
-        certificateUpdateParametersHolder.setDuration(duration.orElse(null));
+        GiftCertificate giftCertificate = new GiftCertificate();
+        giftCertificate.setId(id);
+        giftCertificate.setName(name.orElse(null));
+        giftCertificate.setDescription(description.orElse(null));
+        giftCertificate.setPrice(price.orElse(null));
+        giftCertificate.setDuration(duration.orElse(null));
 
         try {
             Optional<GiftCertificate> giftCertificateOptional =
-                    giftCertificateService.updateWithParameters(certificateUpdateParametersHolder);
+                    giftCertificateService.update(giftCertificate);
             returnObject = giftCertificateOptional.orElseThrow(() ->
                     new ResourceNotFoundException("Gift Certificate (Gift Certificate = " + name + ") not found."));
         } catch (ServiceException e) {

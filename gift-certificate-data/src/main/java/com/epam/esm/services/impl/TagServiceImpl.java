@@ -54,7 +54,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag update(Tag object) throws ServiceException {
+    public Optional<Tag> update(Tag object) throws ServiceException {
         try {
             return tagDAO.update(object);
         } catch (DAOException e) {

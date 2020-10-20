@@ -3,7 +3,6 @@ package com.epam.esm.services.impl;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.model.CertificateUpdateParametersHolder;
 import com.epam.esm.services.GiftCertificateService;
 import com.epam.esm.services.exceptions.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,16 +64,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public Optional<GiftCertificate> updateWithParameters(
-            CertificateUpdateParametersHolder certificateUpdateParametersHolder) throws ServiceException {
-        try {
-            return giftCertificateDAO.updateWithParameters(certificateUpdateParametersHolder);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
     public Optional<GiftCertificate> findById(Long id) throws ServiceException {
         try {
             return giftCertificateDAO.findById(id);
@@ -93,7 +82,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public GiftCertificate update(GiftCertificate object) throws ServiceException {
+    public Optional<GiftCertificate> update(GiftCertificate object) throws ServiceException {
         try {
             return giftCertificateDAO.update(object);
         } catch (DAOException e) {

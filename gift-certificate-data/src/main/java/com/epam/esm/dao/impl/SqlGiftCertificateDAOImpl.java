@@ -4,7 +4,6 @@ import com.epam.esm.dao.Constants;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.model.CertificateUpdateParametersHolder;
 import com.epam.esm.util.DAOUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
@@ -192,24 +191,17 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     }
 
     @Override
-    public GiftCertificate update(GiftCertificate object) throws DAOException {
-        return null;
-    }
-
-    @Override
-    public Optional<GiftCertificate> updateWithParameters(CertificateUpdateParametersHolder certificateUpdateParametersHolder)
-            throws DAOException {
+    public Optional<GiftCertificate> update(GiftCertificate object) throws DAOException {
         Optional<GiftCertificate> returnObject;
-        certificateUpdateParametersHolder.setLastUpdateDate(formatDate());
 
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
             try (PreparedStatement statement1 =
-                         connection.prepareStatement(updateSqlRequestBuilder(certificateUpdateParametersHolder));
+                         connection.prepareStatement(updateSqlRequestBuilder(object));
                  PreparedStatement statement2 = connection.prepareStatement(Constants.FIND_BY_ID_SQL_QUERY)
             ) {
                 statement1.executeUpdate();
-                statement2.setInt(1, certificateUpdateParametersHolder.getId());
+                statement2.setLong(1, object.getId());
                 try (ResultSet resultSet = statement2.executeQuery()) {
                     returnObject = DAOUtils.giftCertificatesListResultSetHandle(resultSet).stream()
                             .findFirst();
@@ -224,31 +216,6 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
             throw new DAOException(e);
         }
         return returnObject;
-    }
-
-    private String updateSqlRequestBuilder(
-            CertificateUpdateParametersHolder certificateUpdateParametersHolder) {
-        String updatePart = "UPDATE gift_certificates.certificates ";
-        String setPart = "SET";
-        String wherePart = " WHERE id = " + certificateUpdateParametersHolder.getId();
-
-        String name = certificateUpdateParametersHolder.getName();
-        String description = certificateUpdateParametersHolder.getDescription();
-        Double price = certificateUpdateParametersHolder.getPrice();
-        String lastUpdateDate = certificateUpdateParametersHolder.getLastUpdateDate();
-        Integer duration = certificateUpdateParametersHolder.getDuration();
-
-        StringBuilder sqlRequest = new StringBuilder();
-        sqlRequest.append(updatePart);
-        sqlRequest.append(setPart);
-        sqlRequest.append((name == null) ? "" : " name = '" + name + "',");
-        sqlRequest.append((description == null) ? "" : " description = '" + description + "',");
-        sqlRequest.append((price == null) ? "" : " price = '" + price + "',");
-        sqlRequest.append(" last_update_date = '").append(lastUpdateDate).append("',");
-        sqlRequest.append((duration == null) ? "" : " duration = '" + duration + "',");
-        sqlRequest.deleteCharAt(sqlRequest.length() - 1);
-        sqlRequest.append(wherePart);
-        return sqlRequest.toString();
     }
 
     @Override
@@ -273,6 +240,30 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
         } catch (SQLException e) {
             throw new DAOException(e);
         }
+    }
+
+    private String updateSqlRequestBuilder(GiftCertificate giftCertificate) {
+        String updatePart = "UPDATE gift_certificates.certificates ";
+        String setPart = "SET";
+        String wherePart = " WHERE id = " + giftCertificate.getId();
+
+        String name = giftCertificate.getName();
+        String description = giftCertificate.getDescription();
+        Double price = giftCertificate.getPrice();
+        String lastUpdateDate = formatDate();
+        Integer duration = giftCertificate.getDuration();
+
+        StringBuilder sqlRequest = new StringBuilder();
+        sqlRequest.append(updatePart);
+        sqlRequest.append(setPart);
+        sqlRequest.append((name == null) ? "" : " name = '" + name + "',");
+        sqlRequest.append((description == null) ? "" : " description = '" + description + "',");
+        sqlRequest.append((price == null) ? "" : " price = '" + price + "',");
+        sqlRequest.append(" last_update_date = '").append(lastUpdateDate).append("',");
+        sqlRequest.append((duration == null) ? "" : " duration = '" + duration + "',");
+        sqlRequest.deleteCharAt(sqlRequest.length() - 1);
+        sqlRequest.append(wherePart);
+        return sqlRequest.toString();
     }
 
     private String formatDate() {

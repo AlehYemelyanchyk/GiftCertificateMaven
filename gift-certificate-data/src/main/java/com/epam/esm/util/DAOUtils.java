@@ -27,7 +27,7 @@ public final class DAOUtils {
         List<GiftCertificate> certificates = new ArrayList<>();
         while (resultSet.next()) {
             GiftCertificate tempCertificate = new GiftCertificate(
-                    resultSet.getInt("id"),
+                    resultSet.getLong("id"),
                     resultSet.getString("name"),
                     resultSet.getString("description"),
                     resultSet.getDouble("price"),

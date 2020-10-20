@@ -12,7 +12,7 @@ public interface CrudService<T, ID> {
 
     Optional<T> save(T object) throws ServiceException;
 
-    T update(T object) throws ServiceException;
+    Optional<T> update(T object) throws ServiceException;
 
     void delete(T object) throws ServiceException;
 

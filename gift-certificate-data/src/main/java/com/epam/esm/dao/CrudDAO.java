@@ -12,7 +12,7 @@ public interface CrudDAO<T, ID> {
 
     Optional<T> save(T object) throws DAOException;
 
-    T update(T object) throws DAOException;
+    Optional<T> update(T object) throws DAOException;
 
     void delete(T object) throws DAOException;
 

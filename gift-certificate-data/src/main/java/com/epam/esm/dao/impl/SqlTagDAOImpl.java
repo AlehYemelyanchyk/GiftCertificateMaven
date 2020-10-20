@@ -118,8 +118,8 @@ public class SqlTagDAOImpl implements TagDAO {
     }
 
     @Override
-    public Tag update(Tag object) throws DAOException {
-        Tag returnObject;
+    public Optional<Tag> update(Tag object) throws DAOException {
+        Optional<Tag> returnObject = null;
 
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
@@ -128,7 +128,7 @@ public class SqlTagDAOImpl implements TagDAO {
                 statement.setString(1, object.getName());
                 statement.setInt(2, object.getId());
                 statement.executeUpdate();
-                returnObject = object;
+//                returnObject = object;
             } catch (SQLException e) {
                 connection.rollback();
                 LOGGER.error("update transaction failed error: " + e.getMessage());
