@@ -1,13 +1,14 @@
 package com.epam.esm.model;
 
-public class ParametersHolder {
+public class CertificateUpdateParametersHolder {
     private Integer id;
     private String name;
     private String description;
     private Double price;
+    private String lastUpdateDate;
     private Integer duration;
 
-    public ParametersHolder() {
+    public CertificateUpdateParametersHolder() {
     }
 
     public Integer getId() {
@@ -40,6 +41,14 @@ public class ParametersHolder {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public String getLastUpdateDate() {
+        return lastUpdateDate;
+    }
+
+    public void setLastUpdateDate(String lastUpdateDate) {
+        this.lastUpdateDate = lastUpdateDate;
     }
 
     public Integer getDuration() {

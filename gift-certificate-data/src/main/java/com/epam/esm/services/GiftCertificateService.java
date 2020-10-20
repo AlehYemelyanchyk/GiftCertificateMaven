@@ -1,6 +1,7 @@
 package com.epam.esm.services;
 
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.model.CertificateUpdateParametersHolder;
 import com.epam.esm.services.exceptions.ServiceException;
 
 import java.util.List;
@@ -14,5 +15,5 @@ public interface GiftCertificateService extends CrudService<GiftCertificate, Lon
     List<GiftCertificate> findAllGiftCertificatesByTagName(String name) throws ServiceException;
 
     Optional<GiftCertificate> updateWithParameters(
-            Integer id, String name, String description, Double price, Integer duration) throws ServiceException;
+            CertificateUpdateParametersHolder certificateUpdateParametersHolder) throws ServiceException;
 }

@@ -1,6 +1,7 @@
 package com.epam.esm.rest.controller;
 
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.model.CertificateUpdateParametersHolder;
 import com.epam.esm.rest.exceptions.ResourceNotFoundException;
 import com.epam.esm.services.GiftCertificateService;
 import com.epam.esm.services.exceptions.ServiceException;
@@ -113,15 +114,16 @@ public class GiftCertificateController {
                                              @RequestParam Optional<Double> price,
                                              @RequestParam Optional<Integer> duration) {
         GiftCertificate returnObject;
+        CertificateUpdateParametersHolder certificateUpdateParametersHolder = new CertificateUpdateParametersHolder();
+        certificateUpdateParametersHolder.setId(id);
+        certificateUpdateParametersHolder.setName(name.orElse(null));
+        certificateUpdateParametersHolder.setDescription(description.orElse(null));
+        certificateUpdateParametersHolder.setPrice(price.orElse(null));
+        certificateUpdateParametersHolder.setDuration(duration.orElse(null));
 
         try {
             Optional<GiftCertificate> giftCertificateOptional =
-                    giftCertificateService.updateWithParameters(
-                            id,
-                            name.orElse(null),
-                            description.orElse(null),
-                            price.orElse(null),
-                            duration.orElse(null));
+                    giftCertificateService.updateWithParameters(certificateUpdateParametersHolder);
             returnObject = giftCertificateOptional.orElseThrow(() ->
                     new ResourceNotFoundException("Gift Certificate (Gift Certificate = " + name + ") not found."));
         } catch (ServiceException e) {

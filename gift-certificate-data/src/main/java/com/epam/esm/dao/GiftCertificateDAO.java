@@ -2,6 +2,7 @@ package com.epam.esm.dao;
 
 import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.model.CertificateUpdateParametersHolder;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,5 +19,5 @@ public interface GiftCertificateDAO extends CrudDAO<GiftCertificate, Long> {
     List<GiftCertificate> findAllGiftCertificatesByTagName(String name) throws DAOException;
 
     Optional<GiftCertificate> updateWithParameters(
-            Integer id, String name, String description, Double price, Integer duration) throws DAOException;
+            CertificateUpdateParametersHolder certificateUpdateParametersHolder) throws DAOException;
 }

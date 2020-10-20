@@ -1,8 +1,10 @@
 package com.epam.esm.dao.impl;
 
+import com.epam.esm.dao.Constants;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.model.CertificateUpdateParametersHolder;
 import com.epam.esm.util.DAOUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
@@ -25,34 +27,6 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     private static final Logger LOGGER = LogManager.getLogger();
     private final BasicDataSource dataSource;
 
-    private static final String FIND_ALL_SQL_QUERY = "SELECT * FROM gift_certificates.certificates";
-    private static final String FIND_ALL_SORT_SQL_QUERY =
-            "SELECT * " +
-                    "FROM gift_certificates.certificates " +
-                    "ORDER BY";
-    private static final String FIND_BY_NAME_SQL_QUERY = "SELECT * FROM gift_certificates.certificates WHERE name = ?";
-    private static final String FIND_BY_NAME_SORT_SQL_QUERY =
-            "SELECT * " +
-                    "FROM gift_certificates.certificates " +
-                    "WHERE name = ? " +
-                    "ORDER BY";
-    private static final String FIND_BY_PART_NAME_DESCRIPTION_SQL_QUERY =
-            "SELECT a.id, a.name, a.description, a.price, a.create_date, a.last_update_date, a.duration " +
-                    "FROM gift_certificates.certificates as a " +
-                    "WHERE a.name LIKE ? OR a.description LIKE ?";
-    private static final String FIND_BY_ID_SQL_QUERY = "SELECT * FROM gift_certificates.certificates WHERE id = ?";
-    private static final String FIND_ALL_GIFT_CERTIFICATES_BY_NAME_SQL_QUERY =
-            "SELECT a.id, a.name, a.description, a.price, a.create_date, a.last_update_date, a.duration " +
-            "FROM gift_certificates.certificates as a " +
-            "JOIN gift_certificates.tagged_certificates as b " +
-            "ON a.id = b.certificate_id " +
-            "JOIN gift_certificates.tags as c " +
-            "ON b.tag_id = c.id " +
-            "WHERE c.name = ?";
-    private static final String SAVE_SQL_QUERY = "INSERT INTO gift_certificates.certificates (name, description, price, create_date, last_update_date, duration) VALUES (?,?,?,?,?,?)";
-    private static final String DELETE_BY_NAME_SQL_QUERY = "DELETE FROM gift_certificates.certificates WHERE name = ?";
-    private static final String DELETE_BY_ID_SQL_QUERY = "DELETE FROM gift_certificates.certificates WHERE id = ?";
-
     @Autowired
     public SqlGiftCertificateDAOImpl(BasicDataSource dataSource) {
         this.dataSource = dataSource;
@@ -63,7 +37,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
         List<GiftCertificate> giftCertificates;
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_ALL_SQL_QUERY)
+             PreparedStatement statement = connection.prepareStatement(Constants.FIND_ALL_SQL_QUERY)
         ) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 giftCertificates = DAOUtils.giftCertificatesListResultSetHandle(resultSet);
@@ -79,7 +53,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
         List<GiftCertificate> giftCertificates;
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_ALL_SORT_SQL_QUERY
+             PreparedStatement statement = connection.prepareStatement(Constants.FIND_ALL_SORT_SQL_QUERY
                      + " " + sortBy
                      + " " + sortOrder
              )
@@ -98,7 +72,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
         List<GiftCertificate> returnList;
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_BY_NAME_SQL_QUERY)
+             PreparedStatement statement = connection.prepareStatement(Constants.FIND_BY_NAME_SQL_QUERY)
         ) {
             statement.setString(1, name);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -115,7 +89,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
         List<GiftCertificate> returnList;
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_BY_NAME_SORT_SQL_QUERY
+             PreparedStatement statement = connection.prepareStatement(Constants.FIND_BY_NAME_SORT_SQL_QUERY
                      + " " + sortBy
                      + " " + sortOrder
              )
@@ -135,7 +109,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
         List<GiftCertificate> returnList;
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_BY_PART_NAME_DESCRIPTION_SQL_QUERY);
+             PreparedStatement statement = connection.prepareStatement(Constants.FIND_BY_PART_NAME_DESCRIPTION_SQL_QUERY);
         ) {
             statement.setString(1, "%"+part+"%");
             statement.setString(2, "%"+part+"%");
@@ -153,7 +127,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
         List<GiftCertificate> returnList;
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_ALL_GIFT_CERTIFICATES_BY_NAME_SQL_QUERY)
+             PreparedStatement statement = connection.prepareStatement(Constants.FIND_ALL_GIFT_CERTIFICATES_BY_NAME_SQL_QUERY)
         ) {
             statement.setString(1, name);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -170,7 +144,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
         Optional<GiftCertificate> returnObject;
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_BY_ID_SQL_QUERY);
+             PreparedStatement statement = connection.prepareStatement(Constants.FIND_BY_ID_SQL_QUERY);
         ) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -189,8 +163,8 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
 
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
-            try (PreparedStatement statement1 = connection.prepareStatement(SAVE_SQL_QUERY);
-                 PreparedStatement statement2 = connection.prepareStatement(FIND_BY_NAME_SQL_QUERY)
+            try (PreparedStatement statement1 = connection.prepareStatement(Constants.SAVE_SQL_QUERY);
+                 PreparedStatement statement2 = connection.prepareStatement(Constants.FIND_BY_NAME_SQL_QUERY)
             ) {
                 statement1.setString(1, object.getName());
                 statement1.setString(2, object.getDescription());
@@ -223,19 +197,19 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     }
 
     @Override
-    public Optional<GiftCertificate> updateWithParameters(Integer id, String name, String description, Double price, Integer duration)
+    public Optional<GiftCertificate> updateWithParameters(CertificateUpdateParametersHolder certificateUpdateParametersHolder)
             throws DAOException {
         Optional<GiftCertificate> returnObject;
-        String lastUpdateDate = formatDate();
+        certificateUpdateParametersHolder.setLastUpdateDate(formatDate());
 
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
             try (PreparedStatement statement1 =
-                         connection.prepareStatement(updateSqlRequestBuilder(id, name, description, price, lastUpdateDate, duration));
-                 PreparedStatement statement2 = connection.prepareStatement(FIND_BY_ID_SQL_QUERY)
+                         connection.prepareStatement(updateSqlRequestBuilder(certificateUpdateParametersHolder));
+                 PreparedStatement statement2 = connection.prepareStatement(Constants.FIND_BY_ID_SQL_QUERY)
             ) {
                 statement1.executeUpdate();
-                statement2.setInt(1, id);
+                statement2.setInt(1, certificateUpdateParametersHolder.getId());
                 try (ResultSet resultSet = statement2.executeQuery()) {
                     returnObject = DAOUtils.giftCertificatesListResultSetHandle(resultSet).stream()
                             .findFirst();
@@ -253,10 +227,16 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     }
 
     private String updateSqlRequestBuilder(
-            Integer id, String name, String description, Double price, String lastUpdateDate, Integer duration) {
+            CertificateUpdateParametersHolder certificateUpdateParametersHolder) {
         String updatePart = "UPDATE gift_certificates.certificates ";
         String setPart = "SET";
-        String wherePart = " WHERE id = " + id;
+        String wherePart = " WHERE id = " + certificateUpdateParametersHolder.getId();
+
+        String name = certificateUpdateParametersHolder.getName();
+        String description = certificateUpdateParametersHolder.getDescription();
+        Double price = certificateUpdateParametersHolder.getPrice();
+        String lastUpdateDate = certificateUpdateParametersHolder.getLastUpdateDate();
+        Integer duration = certificateUpdateParametersHolder.getDuration();
 
         StringBuilder sqlRequest = new StringBuilder();
         sqlRequest.append(updatePart);
@@ -274,7 +254,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     @Override
     public void delete(GiftCertificate object) throws DAOException {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(DELETE_BY_NAME_SQL_QUERY);
+             PreparedStatement statement = connection.prepareStatement(Constants.DELETE_BY_NAME_SQL_QUERY);
         ) {
             statement.setString(1, object.getName());
             statement.executeUpdate();
@@ -286,7 +266,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     @Override
     public void deleteById(Long id) throws DAOException {
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(DELETE_BY_ID_SQL_QUERY);
+             PreparedStatement statement = connection.prepareStatement(Constants.DELETE_BY_ID_SQL_QUERY);
         ) {
             statement.setLong(1, id);
             statement.executeUpdate();
