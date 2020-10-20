@@ -36,7 +36,7 @@ public class GiftCertificateController {
 
     @GetMapping("/certificates")
     public List<GiftCertificate> findAll() {
-        List<GiftCertificate> giftCertificates = null;
+        List<GiftCertificate> giftCertificates;
 
         try {
             giftCertificates = giftCertificateService.findAll();
@@ -62,17 +62,21 @@ public class GiftCertificateController {
     }
 
     @GetMapping("/certificates/findByName")
-    public GiftCertificate findByName(@RequestParam("name") String name) {
-        GiftCertificate returnObject = null;
+    public List<GiftCertificate> findByName(@RequestParam Optional<String> name,
+                                            @RequestParam Optional<String> sortBy,
+                                            @RequestParam Optional<String> sortOrder) {
+        List<GiftCertificate> returnList;
         try {
-            Optional<GiftCertificate> optionalGiftCertificate = giftCertificateService.findByName(name);
-            returnObject = optionalGiftCertificate.orElseThrow(() ->
-                    new ResourceNotFoundException("Certificate (name = " + name + ") not found."));
+            returnList = giftCertificateService.findWithParameters(name.orElse(null), sortBy.orElse(null),
+                    sortOrder.orElse("ASC"));
         } catch (ServiceException e) {
             LOGGER.error("findByName error: " + e.getMessage());
             throw new RuntimeException();
         }
-        return returnObject;
+        if (returnList.isEmpty()) {
+            throw new ResourceNotFoundException("Certificate (name = " + name.get() + ") not found.");
+        }
+        return returnList;
     }
 
     @GetMapping("/certificates/searchBy")
@@ -103,17 +107,26 @@ public class GiftCertificateController {
     }
 
     @PutMapping("/certificates")
-    public GiftCertificate updateCertificate(@RequestBody GiftCertificate giftCertificate) {
+    public GiftCertificate updateCertificate(@RequestParam Integer id,
+                                             @RequestParam Optional<String> name,
+                                             @RequestParam Optional<String> description,
+                                             @RequestParam Optional<Double> price,
+                                             @RequestParam Optional<Integer> duration) {
         GiftCertificate returnObject;
 
         try {
-            returnObject = giftCertificateService.update(giftCertificate);
+            Optional<GiftCertificate> giftCertificateOptional =
+                    giftCertificateService.updateWithParameters(
+                            id,
+                            name.orElse(null),
+                            description.orElse(null),
+                            price.orElse(null),
+                            duration.orElse(null));
+            returnObject = giftCertificateOptional.orElseThrow(() ->
+                    new ResourceNotFoundException("Gift Certificate (Gift Certificate = " + name + ") not found."));
         } catch (ServiceException e) {
             LOGGER.error("findById error: " + e.getMessage());
             throw new RuntimeException();
-        }
-        if (returnObject == null) {
-            throw new ResourceNotFoundException("Gift Certificate (Gift Certificate = " + giftCertificate + ") not found.");
         }
         return returnObject;
     }

@@ -27,9 +27,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public Optional<GiftCertificate> findByName(String name) throws ServiceException {
+    public List<GiftCertificate> findWithParameters(String name, String sortBy, String sortOrder)
+            throws ServiceException {
+        String sortOrderUpperCase = sortOrder.toUpperCase();
         try {
-            return giftCertificateDAO.findByName(name);
+            if (name == null & sortBy == null) {
+                return giftCertificateDAO.findAll();
+            } else if (name == null & sortBy != null) {
+                return giftCertificateDAO.findAllWithSort(sortBy, sortOrderUpperCase);
+            } else if (sortBy == null) {
+                return giftCertificateDAO.findByName(name);
+            } else {
+                return giftCertificateDAO.findByNameWithSort(name, sortBy, sortOrderUpperCase);
+            }
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -48,6 +58,15 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     public List<GiftCertificate> findAllGiftCertificatesByTagName(String name) throws ServiceException {
         try {
             return giftCertificateDAO.findAllGiftCertificatesByTagName(name);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public Optional<GiftCertificate> updateWithParameters(Integer id, String name, String description, Double price, Integer duration) throws ServiceException {
+        try {
+            return giftCertificateDAO.updateWithParameters(id, name, description, price, duration);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

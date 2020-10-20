@@ -2,40 +2,40 @@ package com.epam.esm.rest;
 
 public class ErrorResponse {
 
-    private int status;
-    private String message;
-    private long timeStamp;
+    private String status;
+    private String errorMessage;
+    private String errorCode;
 
     public ErrorResponse() {
     }
 
-    public ErrorResponse(int status, String message, long timeStamp) {
+    public ErrorResponse(String status, String errorMessage, String errorCode) {
         this.status = status;
-        this.message = message;
-        this.timeStamp = timeStamp;
+        this.errorMessage = errorMessage;
+        this.errorCode = errorCode;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public String getMessage() {
-        return message;
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
-    public long getTimeStamp() {
-        return timeStamp;
+    public String getErrorCode() {
+        return errorCode;
     }
 
-    public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 }

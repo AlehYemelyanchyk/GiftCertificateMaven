@@ -12,18 +12,18 @@ public class RestExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(ResourceNotFoundException exception) {
         ErrorResponse error = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.value() + " " + HttpStatus.NOT_FOUND.getReasonPhrase(),
                 exception.getMessage(),
-                System.currentTimeMillis());
+                String.valueOf(HttpStatus.NOT_FOUND.value()));
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleException(Exception exception) {
         ErrorResponse error = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.value() + " " + HttpStatus.NOT_FOUND.getReasonPhrase(),
                 "Ooops! Something went wrong.",
-                System.currentTimeMillis());
+                String.valueOf(HttpStatus.BAD_REQUEST.value()));
          return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }

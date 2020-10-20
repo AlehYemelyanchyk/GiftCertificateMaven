@@ -26,7 +26,16 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     private final BasicDataSource dataSource;
 
     private static final String FIND_ALL_SQL_QUERY = "SELECT * FROM gift_certificates.certificates";
+    private static final String FIND_ALL_SORT_SQL_QUERY =
+            "SELECT * " +
+                    "FROM gift_certificates.certificates " +
+                    "ORDER BY";
     private static final String FIND_BY_NAME_SQL_QUERY = "SELECT * FROM gift_certificates.certificates WHERE name = ?";
+    private static final String FIND_BY_NAME_SORT_SQL_QUERY =
+            "SELECT * " +
+                    "FROM gift_certificates.certificates " +
+                    "WHERE name = ? " +
+                    "ORDER BY";
     private static final String FIND_BY_PART_NAME_DESCRIPTION_SQL_QUERY =
             "SELECT a.id, a.name, a.description, a.price, a.create_date, a.last_update_date, a.duration " +
                     "FROM gift_certificates.certificates as a " +
@@ -41,7 +50,6 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
             "ON b.tag_id = c.id " +
             "WHERE c.name = ?";
     private static final String SAVE_SQL_QUERY = "INSERT INTO gift_certificates.certificates (name, description, price, create_date, last_update_date, duration) VALUES (?,?,?,?,?,?)";
-    private static final String UPDATE_SQL_QUERY = "UPDATE gift_certificates.certificates SET name = ?, last_update_date = ? WHERE id = ?";
     private static final String DELETE_BY_NAME_SQL_QUERY = "DELETE FROM gift_certificates.certificates WHERE name = ?";
     private static final String DELETE_BY_ID_SQL_QUERY = "DELETE FROM gift_certificates.certificates WHERE id = ?";
 
@@ -55,7 +63,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
         List<GiftCertificate> giftCertificates;
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_ALL_SQL_QUERY);
+             PreparedStatement statement = connection.prepareStatement(FIND_ALL_SQL_QUERY)
         ) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 giftCertificates = DAOUtils.giftCertificatesListResultSetHandle(resultSet);
@@ -67,21 +75,59 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     }
 
     @Override
-    public Optional<GiftCertificate> findByName(String name) throws DAOException {
-        Optional<GiftCertificate> returnObject;
+    public List<GiftCertificate> findAllWithSort(String sortBy, String sortOrder) throws DAOException {
+        List<GiftCertificate> giftCertificates;
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(FIND_BY_NAME_SQL_QUERY);
+             PreparedStatement statement = connection.prepareStatement(FIND_ALL_SORT_SQL_QUERY
+                     + " " + sortBy
+                     + " " + sortOrder
+             )
+        ) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                giftCertificates = DAOUtils.giftCertificatesListResultSetHandle(resultSet);
+            }
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+        return giftCertificates;
+    }
+
+    @Override
+    public List<GiftCertificate> findByName(String name) throws DAOException {
+        List<GiftCertificate> returnList;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_BY_NAME_SQL_QUERY)
         ) {
             statement.setString(1, name);
             try (ResultSet resultSet = statement.executeQuery()) {
-                returnObject = DAOUtils.giftCertificatesListResultSetHandle(resultSet).stream()
-                        .findFirst();
+                returnList = DAOUtils.giftCertificatesListResultSetHandle(resultSet);
             }
         } catch (SQLException e) {
             throw new DAOException(e);
         }
-        return returnObject;
+        return returnList;
+    }
+
+    @Override
+    public List<GiftCertificate> findByNameWithSort(String name, String sortBy, String sortOrder) throws DAOException {
+        List<GiftCertificate> returnList;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(FIND_BY_NAME_SORT_SQL_QUERY
+                     + " " + sortBy
+                     + " " + sortOrder
+             )
+        ) {
+            statement.setString(1, name);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                returnList = DAOUtils.giftCertificatesListResultSetHandle(resultSet);
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+        return returnList;
     }
 
     @Override
@@ -173,17 +219,27 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
 
     @Override
     public GiftCertificate update(GiftCertificate object) throws DAOException {
-        GiftCertificate returnObject;
+        return null;
+    }
+
+    @Override
+    public Optional<GiftCertificate> updateWithParameters(Integer id, String name, String description, Double price, Integer duration)
+            throws DAOException {
+        Optional<GiftCertificate> returnObject;
+        String lastUpdateDate = formatDate();
 
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(false);
-            try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL_QUERY);
+            try (PreparedStatement statement1 =
+                         connection.prepareStatement(updateSqlRequestBuilder(id, name, description, price, lastUpdateDate, duration));
+                 PreparedStatement statement2 = connection.prepareStatement(FIND_BY_ID_SQL_QUERY)
             ) {
-                statement.setString(1, object.getName());
-                statement.setString(2, formatDate());
-                statement.setLong(3, object.getId());
-                statement.executeUpdate();
-                returnObject = object;
+                statement1.executeUpdate();
+                statement2.setInt(1, id);
+                try (ResultSet resultSet = statement2.executeQuery()) {
+                    returnObject = DAOUtils.giftCertificatesListResultSetHandle(resultSet).stream()
+                            .findFirst();
+                }
             } catch (SQLException e) {
                 connection.rollback();
                 LOGGER.error("update transaction failed error: " + e.getMessage());
@@ -194,6 +250,25 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
             throw new DAOException(e);
         }
         return returnObject;
+    }
+
+    private String updateSqlRequestBuilder(
+            Integer id, String name, String description, Double price, String lastUpdateDate, Integer duration) {
+        String updatePart = "UPDATE gift_certificates.certificates ";
+        String setPart = "SET";
+        String wherePart = " WHERE id = " + id;
+
+        StringBuilder sqlRequest = new StringBuilder();
+        sqlRequest.append(updatePart);
+        sqlRequest.append(setPart);
+        sqlRequest.append((name == null) ? "" : " name = '" + name + "',");
+        sqlRequest.append((description == null) ? "" : " description = '" + description + "',");
+        sqlRequest.append((price == null) ? "" : " price = '" + price + "',");
+        sqlRequest.append(" last_update_date = '").append(lastUpdateDate).append("',");
+        sqlRequest.append((duration == null) ? "" : " duration = '" + duration + "',");
+        sqlRequest.deleteCharAt(sqlRequest.length() - 1);
+        sqlRequest.append(wherePart);
+        return sqlRequest.toString();
     }
 
     @Override

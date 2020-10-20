@@ -7,9 +7,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GiftCertificateService extends CrudService<GiftCertificate, Long> {
-    Optional<GiftCertificate> findByName(String name) throws ServiceException;
+    List<GiftCertificate> findWithParameters(String name, String sortBy, String sortOrder) throws ServiceException;
 
     List<GiftCertificate> findByPartNameDescription(String part) throws ServiceException;
 
     List<GiftCertificate> findAllGiftCertificatesByTagName(String name) throws ServiceException;
+
+    Optional<GiftCertificate> updateWithParameters(
+            Integer id, String name, String description, Double price, Integer duration) throws ServiceException;
 }
