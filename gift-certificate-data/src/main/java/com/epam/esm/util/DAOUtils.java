@@ -40,7 +40,7 @@ public final class DAOUtils {
     }
 
     public static List<TaggedGiftCertificate> taggedGiftCertificatesListResultSetHandle(ResultSet resultSet) throws SQLException {
-        Map<TaggedGiftCertificate, Set<Tag>> taggedGiftCertificateTagMap = new HashMap<>();
+        Map<TaggedGiftCertificate, Set<Tag>> taggedGiftCertificateTagMap = new LinkedHashMap<>();
 
         while (resultSet.next()) {
             TaggedGiftCertificate tempCertificate = new TaggedGiftCertificate(

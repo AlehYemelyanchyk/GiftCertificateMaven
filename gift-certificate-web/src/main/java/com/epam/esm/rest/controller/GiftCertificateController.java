@@ -25,7 +25,7 @@ public class GiftCertificateController {
 
     @PostMapping("/certificates")
     public GiftCertificate savePortfolio(@RequestBody GiftCertificate giftCertificate) {
-        GiftCertificate returnObject = null;
+        GiftCertificate returnObject;
         try {
             Optional<GiftCertificate> optionalGiftCertificate = giftCertificateService.save(giftCertificate);
             returnObject = optionalGiftCertificate.orElseThrow(() -> new RuntimeException("Operation failed."));
@@ -51,7 +51,7 @@ public class GiftCertificateController {
 
     @GetMapping("/certificates/{id}")
     public GiftCertificate findById(@PathVariable Long id) {
-        GiftCertificate returnObject = null;
+        GiftCertificate returnObject;
         try {
             Optional<GiftCertificate> optionalGiftCertificate = giftCertificateService.findById(id);
             returnObject = optionalGiftCertificate.orElseThrow(() ->
@@ -63,39 +63,29 @@ public class GiftCertificateController {
         return returnObject;
     }
 
-    @GetMapping("/certificates/searchBy")
-    public List<TaggedGiftCertificate> searchBy(@RequestParam Optional<String> name,
-                                                @RequestParam Optional<String> tagName,
+    @GetMapping("/certificates/findBy")
+    public List<TaggedGiftCertificate> findBy(@RequestParam Optional<String> tagName,
+                                                @RequestParam Optional<String> name,
+                                                @RequestParam Optional<String> description,
                                                 @RequestParam Optional<String> sortBy,
                                                 @RequestParam Optional<String> sortOrder) {
         List<TaggedGiftCertificate> returnObject;
 
         SearchParametersHolder searchParametersHolder = new SearchParametersHolder();
-        searchParametersHolder.setName(name.orElse(null));
         searchParametersHolder.setTagName(tagName.orElse(null));
+        searchParametersHolder.setName(name.orElse(null));
+        searchParametersHolder.setDescription(description.orElse(null));
         searchParametersHolder.setSortBy(sortBy.orElse(null));
         searchParametersHolder.setSortOrder(sortOrder.orElse(null));
 
         try {
-            returnObject = giftCertificateService.searchBy(searchParametersHolder);
+            returnObject = giftCertificateService.findBy(searchParametersHolder);
         } catch (ServiceException e) {
             LOGGER.error("searchBy error: " + e.getMessage());
             throw new RuntimeException();
         }
         if (returnObject.isEmpty()) {
             throw new ResourceNotFoundException("Certificates not found.");
-        }
-        return returnObject;
-    }
-
-    @GetMapping("/certificates/findByTagName")
-    public List<GiftCertificate> findByTagName(@RequestParam("name") String name) {
-        List<GiftCertificate> returnObject;
-        try {
-            returnObject = giftCertificateService.findAllGiftCertificatesByTagName(name);
-        } catch (ServiceException e) {
-            LOGGER.error("findByTagName error: " + e.getMessage());
-            throw new RuntimeException();
         }
         return returnObject;
     }

@@ -29,18 +29,9 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findAllGiftCertificatesByTagName(String name) throws ServiceException {
+    public List<TaggedGiftCertificate> findBy(SearchParametersHolder searchParametersHolder) throws ServiceException {
         try {
-            return giftCertificateDAO.findAllGiftCertificatesByTagName(name);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
-    public List<TaggedGiftCertificate> searchBy(SearchParametersHolder searchParametersHolder) throws ServiceException {
-        try {
-            return giftCertificateDAO.searchBy(searchParametersHolder);
+            return giftCertificateDAO.findBy(searchParametersHolder);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

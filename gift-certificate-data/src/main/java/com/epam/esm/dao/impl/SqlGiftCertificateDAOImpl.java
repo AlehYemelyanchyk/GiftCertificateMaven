@@ -50,24 +50,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     }
 
     @Override
-    public List<GiftCertificate> findAllGiftCertificatesByTagName(String name) throws DAOException {
-        List<GiftCertificate> returnList;
-
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(Constants.FIND_ALL_GIFT_CERTIFICATES_BY_NAME_SQL_QUERY)
-        ) {
-            statement.setString(1, name);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                returnList = DAOUtils.giftCertificatesListResultSetHandle(resultSet);
-            }
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
-        return returnList;
-    }
-
-    @Override
-    public List<TaggedGiftCertificate> searchBy(SearchParametersHolder searchParametersHolder) throws DAOException {
+    public List<TaggedGiftCertificate> findBy(SearchParametersHolder searchParametersHolder) throws DAOException {
         List<TaggedGiftCertificate> returnList;
 
         try (Connection connection = dataSource.getConnection();
@@ -217,15 +200,18 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
                         "ON a.id = b.certificate_id " +
                         "JOIN gift_certificates.tags as c " +
                         "ON b.tag_id = c.id";
-        String orderPart = " ORDER BY ";
-        String name = searchParametersHolder.getName();
+        String orderPart = " ORDER BY a.";
         String tagName = searchParametersHolder.getTagName();
+        String name = searchParametersHolder.getName();
+        String description = searchParametersHolder.getDescription();
         String sortBy = searchParametersHolder.getSortBy();
         String sortOrder = searchParametersHolder.getSortOrder();
 
         StringBuilder sqlRequest = new StringBuilder();
         sqlRequest.append(requestBegin);
+        sqlRequest.append((tagName == null) ? "" : " WHERE c.name LIKE '%" + tagName + "%'");
         sqlRequest.append((name == null) ? "" : " WHERE a.name LIKE '%" + name + "%'");
+        sqlRequest.append((description == null) ? "" : " WHERE a.description LIKE '%" + description + "%'");
         sqlRequest.append((sortBy == null) ? "" : orderPart + sortBy);
         sqlRequest.append((sortOrder == null) ? "" : " " + sortOrder);
 

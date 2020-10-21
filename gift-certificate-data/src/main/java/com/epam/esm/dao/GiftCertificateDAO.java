@@ -8,7 +8,6 @@ import com.epam.esm.model.TaggedGiftCertificate;
 import java.util.List;
 
 public interface GiftCertificateDAO extends CrudDAO<GiftCertificate, Long> {
-    List<GiftCertificate> findAllGiftCertificatesByTagName(String name) throws DAOException;
 
-    List<TaggedGiftCertificate> searchBy(SearchParametersHolder searchParametersHolder) throws DAOException;
+    List<TaggedGiftCertificate> findBy(SearchParametersHolder searchParametersHolder) throws DAOException;
 }

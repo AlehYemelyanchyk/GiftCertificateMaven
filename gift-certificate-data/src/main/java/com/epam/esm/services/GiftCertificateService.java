@@ -8,8 +8,7 @@ import com.epam.esm.services.exceptions.ServiceException;
 import java.util.List;
 
 public interface GiftCertificateService extends CrudService<GiftCertificate, Long> {
-    List<GiftCertificate> findAllGiftCertificatesByTagName(String name) throws ServiceException;
 
-    List<TaggedGiftCertificate> searchBy(SearchParametersHolder searchParametersHolder) throws ServiceException;
+    List<TaggedGiftCertificate> findBy(SearchParametersHolder searchParametersHolder) throws ServiceException;
 
 }

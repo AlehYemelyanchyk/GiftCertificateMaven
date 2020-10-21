@@ -1,12 +1,21 @@
 package com.epam.esm.model;
 
 public class SearchParametersHolder {
-    String name;
     String tagName;
+    String name;
+    String description;
     String sortBy;
     String sortOrder;
 
     public SearchParametersHolder() {
+    }
+
+    public String getTagName() {
+        return tagName;
+    }
+
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
     }
 
     public String getName() {
@@ -17,12 +26,12 @@ public class SearchParametersHolder {
         this.name = name;
     }
 
-    public String getTagName() {
-        return tagName;
+    public String getDescription() {
+        return description;
     }
 
-    public void setTagName(String tagName) {
-        this.tagName = tagName;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getSortBy() {
