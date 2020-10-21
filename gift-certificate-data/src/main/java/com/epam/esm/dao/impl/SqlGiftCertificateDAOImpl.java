@@ -4,6 +4,8 @@ import com.epam.esm.dao.Constants;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.model.SearchParametersHolder;
+import com.epam.esm.model.TaggedGiftCertificate;
 import com.epam.esm.util.DAOUtils;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
@@ -48,80 +50,6 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     }
 
     @Override
-    public List<GiftCertificate> findAllWithSort(String sortBy, String sortOrder) throws DAOException {
-        List<GiftCertificate> giftCertificates;
-
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(Constants.FIND_ALL_SORT_SQL_QUERY
-                     + " " + sortBy
-                     + " " + sortOrder
-             )
-        ) {
-            try (ResultSet resultSet = statement.executeQuery()) {
-                giftCertificates = DAOUtils.giftCertificatesListResultSetHandle(resultSet);
-            }
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
-        return giftCertificates;
-    }
-
-    @Override
-    public List<GiftCertificate> findByName(String name) throws DAOException {
-        List<GiftCertificate> returnList;
-
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(Constants.FIND_BY_NAME_SQL_QUERY)
-        ) {
-            statement.setString(1, name);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                returnList = DAOUtils.giftCertificatesListResultSetHandle(resultSet);
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-        return returnList;
-    }
-
-    @Override
-    public List<GiftCertificate> findByNameWithSort(String name, String sortBy, String sortOrder) throws DAOException {
-        List<GiftCertificate> returnList;
-
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(Constants.FIND_BY_NAME_SORT_SQL_QUERY
-                     + " " + sortBy
-                     + " " + sortOrder
-             )
-        ) {
-            statement.setString(1, name);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                returnList = DAOUtils.giftCertificatesListResultSetHandle(resultSet);
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-        return returnList;
-    }
-
-    @Override
-    public List<GiftCertificate> findByPartNameDescription(String part) throws DAOException {
-        List<GiftCertificate> returnList;
-
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(Constants.FIND_BY_PART_NAME_DESCRIPTION_SQL_QUERY);
-        ) {
-            statement.setString(1, "%"+part+"%");
-            statement.setString(2, "%"+part+"%");
-            try (ResultSet resultSet = statement.executeQuery()) {
-                returnList = DAOUtils.giftCertificatesListResultSetHandle(resultSet);
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-        return returnList;
-    }
-
-    @Override
     public List<GiftCertificate> findAllGiftCertificatesByTagName(String name) throws DAOException {
         List<GiftCertificate> returnList;
 
@@ -131,6 +59,22 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
             statement.setString(1, name);
             try (ResultSet resultSet = statement.executeQuery()) {
                 returnList = DAOUtils.giftCertificatesListResultSetHandle(resultSet);
+            }
+        } catch (Exception e) {
+            throw new DAOException(e);
+        }
+        return returnList;
+    }
+
+    @Override
+    public List<TaggedGiftCertificate> searchBy(SearchParametersHolder searchParametersHolder) throws DAOException {
+        List<TaggedGiftCertificate> returnList;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(searchByRequestBuilder(searchParametersHolder))
+        ) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                returnList = DAOUtils.taggedGiftCertificatesListResultSetHandle(resultSet);
             }
         } catch (Exception e) {
             throw new DAOException(e);
@@ -243,8 +187,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     }
 
     private String updateSqlRequestBuilder(GiftCertificate giftCertificate) {
-        String updatePart = "UPDATE gift_certificates.certificates ";
-        String setPart = "SET";
+        String updatePart = "UPDATE gift_certificates.certificates SET ";
         String wherePart = " WHERE id = " + giftCertificate.getId();
 
         String name = giftCertificate.getName();
@@ -255,7 +198,6 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
 
         StringBuilder sqlRequest = new StringBuilder();
         sqlRequest.append(updatePart);
-        sqlRequest.append(setPart);
         sqlRequest.append((name == null) ? "" : " name = '" + name + "',");
         sqlRequest.append((description == null) ? "" : " description = '" + description + "',");
         sqlRequest.append((price == null) ? "" : " price = '" + price + "',");
@@ -263,6 +205,30 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
         sqlRequest.append((duration == null) ? "" : " duration = '" + duration + "',");
         sqlRequest.deleteCharAt(sqlRequest.length() - 1);
         sqlRequest.append(wherePart);
+
+        return sqlRequest.toString();
+    }
+
+    private String searchByRequestBuilder(SearchParametersHolder searchParametersHolder) {
+        String requestBegin =
+                "SELECT a.id, a.name, a.description, a.price, a.create_date, a.last_update_date, a.duration, c.id, c.name " +
+                        "FROM gift_certificates.certificates as a " +
+                        "JOIN gift_certificates.tagged_certificates as b " +
+                        "ON a.id = b.certificate_id " +
+                        "JOIN gift_certificates.tags as c " +
+                        "ON b.tag_id = c.id";
+        String orderPart = " ORDER BY ";
+        String name = searchParametersHolder.getName();
+        String tagName = searchParametersHolder.getTagName();
+        String sortBy = searchParametersHolder.getSortBy();
+        String sortOrder = searchParametersHolder.getSortOrder();
+
+        StringBuilder sqlRequest = new StringBuilder();
+        sqlRequest.append(requestBegin);
+        sqlRequest.append((name == null) ? "" : " WHERE a.name LIKE '%" + name + "%'");
+        sqlRequest.append((sortBy == null) ? "" : orderPart + sortBy);
+        sqlRequest.append((sortOrder == null) ? "" : " " + sortOrder);
+
         return sqlRequest.toString();
     }
 

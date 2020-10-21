@@ -1,6 +1,8 @@
 package com.epam.esm.rest.controller;
 
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.model.SearchParametersHolder;
+import com.epam.esm.model.TaggedGiftCertificate;
 import com.epam.esm.rest.exceptions.ResourceNotFoundException;
 import com.epam.esm.services.GiftCertificateService;
 import com.epam.esm.services.exceptions.ServiceException;
@@ -61,35 +63,27 @@ public class GiftCertificateController {
         return returnObject;
     }
 
-    @GetMapping("/certificates/findByName")
-    public List<GiftCertificate> findByName(@RequestParam Optional<String> name,
-                                            @RequestParam Optional<String> sortBy,
-                                            @RequestParam Optional<String> sortOrder) {
-        List<GiftCertificate> returnList;
-        try {
-            returnList = giftCertificateService.findWithParameters(name.orElse(null), sortBy.orElse(null),
-                    sortOrder.orElse("ASC"));
-        } catch (ServiceException e) {
-            LOGGER.error("findByName error: " + e.getMessage());
-            throw new RuntimeException();
-        }
-        if (returnList.isEmpty()) {
-            throw new ResourceNotFoundException("Certificate (name = " + name.get() + ") not found.");
-        }
-        return returnList;
-    }
-
     @GetMapping("/certificates/searchBy")
-    public List<GiftCertificate> searchBy(@RequestParam("part") String part) {
-        List<GiftCertificate> returnObject;
+    public List<TaggedGiftCertificate> searchBy(@RequestParam Optional<String> name,
+                                                @RequestParam Optional<String> tagName,
+                                                @RequestParam Optional<String> sortBy,
+                                                @RequestParam Optional<String> sortOrder) {
+        List<TaggedGiftCertificate> returnObject;
+
+        SearchParametersHolder searchParametersHolder = new SearchParametersHolder();
+        searchParametersHolder.setName(name.orElse(null));
+        searchParametersHolder.setTagName(tagName.orElse(null));
+        searchParametersHolder.setSortBy(sortBy.orElse(null));
+        searchParametersHolder.setSortOrder(sortOrder.orElse(null));
+
         try {
-            returnObject = giftCertificateService.findByPartNameDescription(part);
+            returnObject = giftCertificateService.searchBy(searchParametersHolder);
         } catch (ServiceException e) {
-            LOGGER.error("findByName error: " + e.getMessage());
+            LOGGER.error("searchBy error: " + e.getMessage());
             throw new RuntimeException();
         }
         if (returnObject.isEmpty()) {
-            throw new ResourceNotFoundException("Certificate (name = " + part + ") not found.");
+            throw new ResourceNotFoundException("Certificates not found.");
         }
         return returnObject;
     }

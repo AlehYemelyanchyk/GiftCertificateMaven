@@ -3,6 +3,8 @@ package com.epam.esm.services.impl;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.model.SearchParametersHolder;
+import com.epam.esm.model.TaggedGiftCertificate;
 import com.epam.esm.services.GiftCertificateService;
 import com.epam.esm.services.exceptions.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,37 +29,18 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public List<GiftCertificate> findWithParameters(String name, String sortBy, String sortOrder)
-            throws ServiceException {
-        String sortOrderUpperCase = sortOrder.toUpperCase();
-        try {
-            if (name == null & sortBy == null) {
-                return giftCertificateDAO.findAll();
-            } else if (name == null & sortBy != null) {
-                return giftCertificateDAO.findAllWithSort(sortBy, sortOrderUpperCase);
-            } else if (sortBy == null) {
-                return giftCertificateDAO.findByName(name);
-            } else {
-                return giftCertificateDAO.findByNameWithSort(name, sortBy, sortOrderUpperCase);
-            }
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
-    public List<GiftCertificate> findByPartNameDescription(String part) throws ServiceException {
-        try {
-            return giftCertificateDAO.findByPartNameDescription(part);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
     public List<GiftCertificate> findAllGiftCertificatesByTagName(String name) throws ServiceException {
         try {
             return giftCertificateDAO.findAllGiftCertificatesByTagName(name);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
+    public List<TaggedGiftCertificate> searchBy(SearchParametersHolder searchParametersHolder) throws ServiceException {
+        try {
+            return giftCertificateDAO.searchBy(searchParametersHolder);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
