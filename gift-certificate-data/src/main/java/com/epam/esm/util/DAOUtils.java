@@ -40,7 +40,7 @@ public final class DAOUtils {
     }
 
     public static List<TaggedGiftCertificate> taggedGiftCertificatesListResultSetHandle(ResultSet resultSet) throws SQLException {
-        Map<TaggedGiftCertificate, Set<Tag>> taggedGiftCertificateTagMap = new LinkedHashMap<>();
+        Set<TaggedGiftCertificate> taggedGiftCertificatesSet = new LinkedHashSet<>();
 
         while (resultSet.next()) {
             TaggedGiftCertificate tempCertificate = new TaggedGiftCertificate(
@@ -56,29 +56,17 @@ public final class DAOUtils {
                     resultSet.getInt("c.id"),
                     resultSet.getString("c.name"));
 
-
-            Set<Tag> tags = taggedGiftCertificateTagMap.get(tempCertificate);
-            if (tags != null) {
-                tags.add(tempTag);
+            if (!taggedGiftCertificatesSet.contains(tempCertificate)) {
+                tempCertificate.getTags().add(tempTag);
+                taggedGiftCertificatesSet.add(tempCertificate);
             } else {
-                Set<Tag> tempTags = new HashSet<>();
-                tempTags.add(tempTag);
-                taggedGiftCertificateTagMap.put(tempCertificate, tempTags);
+                for (TaggedGiftCertificate nextCertificate : taggedGiftCertificatesSet) {
+                    if (tempCertificate.equals(nextCertificate)) {
+                        nextCertificate.getTags().add(tempTag);
+                    }
+                }
             }
-
         }
-        return getCertificatesWithTags(taggedGiftCertificateTagMap);
-    }
-
-    private static List<TaggedGiftCertificate> getCertificatesWithTags(
-            Map<TaggedGiftCertificate, Set<Tag>> taggedGiftCertificateTagMap) {
-        List<TaggedGiftCertificate> taggedGiftCertificates = new ArrayList<>();
-
-        for (Map.Entry<TaggedGiftCertificate, Set<Tag>> entry : taggedGiftCertificateTagMap.entrySet()) {
-            TaggedGiftCertificate tempTaggedCertificate = entry.getKey();
-            tempTaggedCertificate.setTags(entry.getValue());
-            taggedGiftCertificates.add(tempTaggedCertificate);
-        }
-        return taggedGiftCertificates;
+        return new ArrayList<>(taggedGiftCertificatesSet);
     }
 }
