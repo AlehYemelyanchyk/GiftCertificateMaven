@@ -10,6 +10,14 @@ public class SearchParametersHolder {
     public SearchParametersHolder() {
     }
 
+    public SearchParametersHolder(String tagName, String name, String description, String sortBy, String sortOrder) {
+        this.tagName = tagName;
+        this.name = name;
+        this.description = description;
+        this.sortBy = sortBy;
+        this.sortOrder = sortOrder;
+    }
+
     public String getTagName() {
         return tagName;
     }
