@@ -24,10 +24,10 @@ public class GiftCertificateController {
     private GiftCertificateService giftCertificateService;
 
     @PostMapping("/certificates")
-    public GiftCertificate savePortfolio(@RequestBody GiftCertificate giftCertificate) {
+    public GiftCertificate savePortfolio(@RequestBody TaggedGiftCertificate giftCertificate) {
         GiftCertificate returnObject;
         try {
-            Optional<GiftCertificate> optionalGiftCertificate = giftCertificateService.save(giftCertificate);
+            Optional<TaggedGiftCertificate> optionalGiftCertificate = giftCertificateService.save(giftCertificate);
             returnObject = optionalGiftCertificate.orElseThrow(() -> new RuntimeException("Operation failed."));
         } catch (ServiceException e) {
             LOGGER.error("save error: " + e.getMessage());
@@ -37,8 +37,8 @@ public class GiftCertificateController {
     }
 
     @GetMapping("/certificates")
-    public List<GiftCertificate> findAll() {
-        List<GiftCertificate> giftCertificates;
+    public List<TaggedGiftCertificate> findAll() {
+        List<TaggedGiftCertificate> giftCertificates;
 
         try {
             giftCertificates = giftCertificateService.findAll();
@@ -53,7 +53,7 @@ public class GiftCertificateController {
     public GiftCertificate findById(@PathVariable Long id) {
         GiftCertificate returnObject;
         try {
-            Optional<GiftCertificate> optionalGiftCertificate = giftCertificateService.findById(id);
+            Optional<TaggedGiftCertificate> optionalGiftCertificate = giftCertificateService.findById(id);
             returnObject = optionalGiftCertificate.orElseThrow(() ->
                     new ResourceNotFoundException("Tag (id = " + id + ") not found."));
         } catch (ServiceException e) {
@@ -96,8 +96,8 @@ public class GiftCertificateController {
                                              @RequestParam Optional<String> description,
                                              @RequestParam Optional<Double> price,
                                              @RequestParam Optional<Integer> duration) {
-        GiftCertificate returnObject;
-        GiftCertificate giftCertificate = new GiftCertificate();
+        TaggedGiftCertificate returnObject;
+        TaggedGiftCertificate giftCertificate = new TaggedGiftCertificate();
         giftCertificate.setId(id);
         giftCertificate.setName(name.orElse(null));
         giftCertificate.setDescription(description.orElse(null));
@@ -105,7 +105,7 @@ public class GiftCertificateController {
         giftCertificate.setDuration(duration.orElse(null));
 
         try {
-            Optional<GiftCertificate> giftCertificateOptional =
+            Optional<TaggedGiftCertificate> giftCertificateOptional =
                     giftCertificateService.update(giftCertificate);
             returnObject = giftCertificateOptional.orElseThrow(() ->
                     new ResourceNotFoundException("Gift Certificate (Gift Certificate = " + name + ") not found."));

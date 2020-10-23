@@ -2,7 +2,6 @@ package com.epam.esm.services.impl;
 
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.exceptions.DAOException;
-import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.model.SearchParametersHolder;
 import com.epam.esm.model.TaggedGiftCertificate;
 import com.epam.esm.services.GiftCertificateService;
@@ -20,7 +19,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     private GiftCertificateDAO giftCertificateDAO;
 
     @Override
-    public List<GiftCertificate> findAll() throws ServiceException {
+    public List<TaggedGiftCertificate> findAll() throws ServiceException {
         try {
             return giftCertificateDAO.findAll();
         } catch (DAOException e) {
@@ -38,7 +37,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public Optional<GiftCertificate> findById(Long id) throws ServiceException {
+    public Optional<TaggedGiftCertificate> findById(Long id) throws ServiceException {
         try {
             return giftCertificateDAO.findById(id);
         } catch (DAOException e) {
@@ -47,7 +46,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public Optional<GiftCertificate> save(GiftCertificate object) throws ServiceException {
+    public Optional<TaggedGiftCertificate> save(TaggedGiftCertificate object) throws ServiceException {
         try {
             return giftCertificateDAO.save(object);
         } catch (DAOException e) {
@@ -56,7 +55,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public Optional<GiftCertificate> update(GiftCertificate object) throws ServiceException {
+    public Optional<TaggedGiftCertificate> update(TaggedGiftCertificate object) throws ServiceException {
         try {
             return giftCertificateDAO.update(object);
         } catch (DAOException e) {
@@ -65,7 +64,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     }
 
     @Override
-    public void delete(GiftCertificate object) throws ServiceException {
+    public void delete(TaggedGiftCertificate object) throws ServiceException {
         try {
             giftCertificateDAO.delete(object);
         } catch (DAOException e) {

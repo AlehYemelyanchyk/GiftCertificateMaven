@@ -2,7 +2,6 @@ package com.epam.esm.services.impl;
 
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.exceptions.DAOException;
-import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.model.SearchParametersHolder;
 import com.epam.esm.model.TaggedGiftCertificate;
 import com.epam.esm.services.exceptions.ServiceException;
@@ -25,13 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(MockitoExtension.class)
 class GiftCertificateServiceImplTest {
 
-    private static final GiftCertificate EXPECTED_GIFT_CERTIFICATE = new GiftCertificate(
-            "Test",
-            "This is a test cert",
-            9.99,
-            LocalDateTime.parse("2012-12-03T10:15:30+01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-            LocalDateTime.parse("2012-12-03T10:15:30+01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-            31);
     private static final TaggedGiftCertificate EXPECTED_TAGGED_GIFT_CERTIFICATE = new TaggedGiftCertificate(
             "Test",
             "This is a test cert",
@@ -46,7 +38,7 @@ class GiftCertificateServiceImplTest {
             "name",
             "desc"
     );
-    private static final Optional<GiftCertificate> EXPECTED_OPTIONAL_GIFT_CERTIFICATE = Optional.of(EXPECTED_GIFT_CERTIFICATE);
+    private static final Optional<TaggedGiftCertificate> EXPECTED_OPTIONAL_GIFT_CERTIFICATE = Optional.of(EXPECTED_TAGGED_GIFT_CERTIFICATE);
     private static final long TEST_ID = 1;
     private static final String TEST_NAME = "Test Certificate";
     private static final DAOException TEST_EXCEPTION = new DAOException("Test message", new RuntimeException());
@@ -59,11 +51,11 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void findAllTest() throws DAOException, ServiceException {
-        List<GiftCertificate> expectedList = new ArrayList<>();
-        expectedList.add(EXPECTED_GIFT_CERTIFICATE);
+        List<TaggedGiftCertificate> expectedList = new ArrayList<>();
+        expectedList.add(EXPECTED_TAGGED_GIFT_CERTIFICATE);
 
         Mockito.when(giftCertificateDAO.findAll()).thenReturn(expectedList);
-        List<GiftCertificate> actualList = giftCertificateService.findAll();
+        List<TaggedGiftCertificate> actualList = giftCertificateService.findAll();
         assertEquals(expectedList, actualList);
     }
 
@@ -93,7 +85,7 @@ class GiftCertificateServiceImplTest {
     @Test
     void findByIdTest() throws DAOException, ServiceException {
         Mockito.when(giftCertificateDAO.findById(TEST_ID)).thenReturn(EXPECTED_OPTIONAL_GIFT_CERTIFICATE);
-        Optional<GiftCertificate> actualGiftCertificate = giftCertificateService.findById(TEST_ID);
+        Optional<TaggedGiftCertificate> actualGiftCertificate = giftCertificateService.findById(TEST_ID);
         assertEquals(EXPECTED_OPTIONAL_GIFT_CERTIFICATE, actualGiftCertificate);
     }
 
@@ -105,41 +97,41 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void saveTest() throws DAOException, ServiceException {
-        Mockito.when(giftCertificateDAO.save(EXPECTED_GIFT_CERTIFICATE)).thenReturn(EXPECTED_OPTIONAL_GIFT_CERTIFICATE);
-        Optional<GiftCertificate> actualGiftCertificate = giftCertificateService.save(EXPECTED_GIFT_CERTIFICATE);
+        Mockito.when(giftCertificateDAO.save(EXPECTED_TAGGED_GIFT_CERTIFICATE)).thenReturn(EXPECTED_OPTIONAL_GIFT_CERTIFICATE);
+        Optional<TaggedGiftCertificate> actualGiftCertificate = giftCertificateService.save(EXPECTED_TAGGED_GIFT_CERTIFICATE);
         assertEquals(EXPECTED_OPTIONAL_GIFT_CERTIFICATE, actualGiftCertificate);
     }
 
     @Test
     void saveExceptionTest() throws DAOException {
-        Mockito.when(giftCertificateDAO.save(EXPECTED_GIFT_CERTIFICATE)).thenThrow(DAOException.class);
-        assertThrows(ServiceException.class, () -> giftCertificateService.save(EXPECTED_GIFT_CERTIFICATE));
+        Mockito.when(giftCertificateDAO.save(EXPECTED_TAGGED_GIFT_CERTIFICATE)).thenThrow(DAOException.class);
+        assertThrows(ServiceException.class, () -> giftCertificateService.save(EXPECTED_TAGGED_GIFT_CERTIFICATE));
     }
 
     @Test
     void updateUpdate() throws DAOException, ServiceException {
-        Mockito.when(giftCertificateDAO.update(EXPECTED_GIFT_CERTIFICATE)).thenReturn(EXPECTED_OPTIONAL_GIFT_CERTIFICATE);
-        Optional<GiftCertificate> actualGiftCertificate = giftCertificateService.update(EXPECTED_GIFT_CERTIFICATE);
+        Mockito.when(giftCertificateDAO.update(EXPECTED_TAGGED_GIFT_CERTIFICATE)).thenReturn(EXPECTED_OPTIONAL_GIFT_CERTIFICATE);
+        Optional<TaggedGiftCertificate> actualGiftCertificate = giftCertificateService.update(EXPECTED_TAGGED_GIFT_CERTIFICATE);
         assertEquals(EXPECTED_OPTIONAL_GIFT_CERTIFICATE, actualGiftCertificate);
     }
 
     @Test
     void updateExceptionTest() throws DAOException {
-        Mockito.when(giftCertificateDAO.update(EXPECTED_GIFT_CERTIFICATE)).thenThrow(DAOException.class);
-        assertThrows(ServiceException.class, () -> giftCertificateService.update(EXPECTED_GIFT_CERTIFICATE));
+        Mockito.when(giftCertificateDAO.update(EXPECTED_TAGGED_GIFT_CERTIFICATE)).thenThrow(DAOException.class);
+        assertThrows(ServiceException.class, () -> giftCertificateService.update(EXPECTED_TAGGED_GIFT_CERTIFICATE));
     }
 
     @Test
     void deleteInvocationTest() throws DAOException, ServiceException {
-        giftCertificateService.delete(EXPECTED_GIFT_CERTIFICATE);
-        Mockito.verify(giftCertificateDAO).delete(EXPECTED_GIFT_CERTIFICATE);
+        giftCertificateService.delete(EXPECTED_TAGGED_GIFT_CERTIFICATE);
+        Mockito.verify(giftCertificateDAO).delete(EXPECTED_TAGGED_GIFT_CERTIFICATE);
     }
 
     @Test
     void deleteExceptionTest() throws DAOException {
-        Mockito.doThrow(TEST_EXCEPTION).when(giftCertificateDAO).delete(EXPECTED_GIFT_CERTIFICATE);
+        Mockito.doThrow(TEST_EXCEPTION).when(giftCertificateDAO).delete(EXPECTED_TAGGED_GIFT_CERTIFICATE);
         try {
-            giftCertificateService.delete(EXPECTED_GIFT_CERTIFICATE);
+            giftCertificateService.delete(EXPECTED_TAGGED_GIFT_CERTIFICATE);
         } catch (ServiceException e) {
             assertEquals(TEST_EXCEPTION, e.getCause());
         }

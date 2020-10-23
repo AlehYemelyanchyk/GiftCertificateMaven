@@ -1,6 +1,5 @@
 package com.epam.esm.util;
 
-import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.model.TaggedGiftCertificate;
 
@@ -8,7 +7,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 public final class DAOUtils {
 
@@ -23,10 +25,10 @@ public final class DAOUtils {
         return users;
     }
 
-    public static List<GiftCertificate> giftCertificatesListResultSetHandle(ResultSet resultSet) throws SQLException {
-        List<GiftCertificate> certificates = new ArrayList<>();
+    public static List<TaggedGiftCertificate> taggedGiftCertificatesListResultSetHandle(ResultSet resultSet) throws SQLException {
+        List<TaggedGiftCertificate> certificates = new ArrayList<>();
         while (resultSet.next()) {
-            GiftCertificate tempCertificate = new GiftCertificate(
+            TaggedGiftCertificate tempCertificate = new TaggedGiftCertificate(
                     resultSet.getLong("id"),
                     resultSet.getString("name"),
                     resultSet.getString("description"),
@@ -39,7 +41,7 @@ public final class DAOUtils {
         return certificates;
     }
 
-    public static List<TaggedGiftCertificate> taggedGiftCertificatesListResultSetHandle(ResultSet resultSet) throws SQLException {
+    public static List<TaggedGiftCertificate> taggedGiftCertificatesListTwoTablesResultSetHandle(ResultSet resultSet) throws SQLException {
         Set<TaggedGiftCertificate> taggedGiftCertificatesSet = new LinkedHashSet<>();
 
         while (resultSet.next()) {
