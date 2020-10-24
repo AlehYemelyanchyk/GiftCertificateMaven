@@ -5,14 +5,13 @@ import com.epam.esm.entity.Tag;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 
 @Component
 public class TaggedGiftCertificate extends GiftCertificate {
     private static final Long serialVersionUID = 1724820758632935338L;
 
-    private Set<Tag> tags = new HashSet<>();
+    private Set<Tag> tags;
 
     public TaggedGiftCertificate() {
     }

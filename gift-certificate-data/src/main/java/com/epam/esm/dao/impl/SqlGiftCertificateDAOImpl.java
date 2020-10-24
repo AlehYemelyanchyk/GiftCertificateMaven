@@ -29,6 +29,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     private static final Logger LOGGER = LogManager.getLogger();
     private final BasicDataSource dataSource;
 
+
     @Autowired
     public SqlGiftCertificateDAOImpl(BasicDataSource dataSource) {
         this.dataSource = dataSource;
@@ -85,11 +86,9 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     }
 
     @Override
-    public Optional<TaggedGiftCertificate> save(TaggedGiftCertificate object) throws DAOException {
+    public Optional<TaggedGiftCertificate> save(TaggedGiftCertificate object, Connection connection) throws DAOException {
         Optional<TaggedGiftCertificate> returnObject;
 
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(false);
             try (PreparedStatement statement1 = connection.prepareStatement(Constants.SAVE_CERTIFICATE_SQL_QUERY);
                  PreparedStatement statement2 = connection.prepareStatement(Constants.FIND_CERTIFICATES_BY_NAME_SQL_QUERY);
                  PreparedStatement statement3 = connection.prepareStatement(Constants.SAVE_TAGS_SQL_QUERY);
@@ -132,15 +131,10 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
                     }
                 });
             } catch (SQLException e) {
-                connection.rollback();
                 LOGGER.error("save transaction failed error: " + e.getMessage());
-                throw e;
+                throw new DAOException(e);
             }
-            connection.commit();
 
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
         return returnObject;
     }
 

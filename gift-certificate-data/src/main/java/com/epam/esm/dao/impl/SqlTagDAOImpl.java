@@ -82,11 +82,9 @@ public class SqlTagDAOImpl implements TagDAO {
     }
 
     @Override
-    public Optional<Tag> save(Tag object) throws DAOException {
+    public Optional<Tag> save(Tag object, Connection connection) throws DAOException {
         Optional<Tag> returnObject;
 
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(false);
             try (PreparedStatement statementSave = connection.prepareStatement(Constants.SAVE_TAGS_SQL_QUERY);
                  PreparedStatement statementFindByName = connection.prepareStatement(Constants.FIND_TAGS_BY_NAME_SQL_QUERY)
             ) {
@@ -98,15 +96,10 @@ public class SqlTagDAOImpl implements TagDAO {
                             .findFirst();
                 }
             } catch (SQLException e) {
-                connection.rollback();
                 LOGGER.error("save transaction failed error: " + e.getMessage());
-                throw e;
+                throw new DAOException(e);
             }
-            connection.commit();
 
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
         return returnObject;
     }
 
