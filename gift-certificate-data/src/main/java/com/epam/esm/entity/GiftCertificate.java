@@ -80,7 +80,8 @@ public class GiftCertificate implements Serializable {
     @Override
     public String toString() {
         return "GiftCertificate{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", createDate=" + createDate +

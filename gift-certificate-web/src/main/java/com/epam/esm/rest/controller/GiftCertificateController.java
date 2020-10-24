@@ -1,6 +1,5 @@
 package com.epam.esm.rest.controller;
 
-import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.model.SearchParametersHolder;
 import com.epam.esm.model.TaggedGiftCertificate;
 import com.epam.esm.rest.exceptions.ResourceNotFoundException;
@@ -24,8 +23,8 @@ public class GiftCertificateController {
     private GiftCertificateService giftCertificateService;
 
     @PostMapping("/certificates")
-    public GiftCertificate savePortfolio(@RequestBody TaggedGiftCertificate giftCertificate) {
-        GiftCertificate returnObject;
+    public TaggedGiftCertificate savePortfolio(@RequestBody TaggedGiftCertificate giftCertificate) {
+        TaggedGiftCertificate returnObject;
         try {
             Optional<TaggedGiftCertificate> optionalGiftCertificate = giftCertificateService.save(giftCertificate);
             returnObject = optionalGiftCertificate.orElseThrow(() -> new RuntimeException("Operation failed."));
@@ -50,8 +49,8 @@ public class GiftCertificateController {
     }
 
     @GetMapping("/certificates/{id}")
-    public GiftCertificate findById(@PathVariable Long id) {
-        GiftCertificate returnObject;
+    public TaggedGiftCertificate findById(@PathVariable Long id) {
+        TaggedGiftCertificate returnObject;
         try {
             Optional<TaggedGiftCertificate> optionalGiftCertificate = giftCertificateService.findById(id);
             returnObject = optionalGiftCertificate.orElseThrow(() ->
@@ -91,7 +90,7 @@ public class GiftCertificateController {
     }
 
     @PutMapping("/certificates")
-    public GiftCertificate updateCertificate(@RequestParam Long id,
+    public TaggedGiftCertificate updateCertificate(@RequestParam Long id,
                                              @RequestParam Optional<String> name,
                                              @RequestParam Optional<String> description,
                                              @RequestParam Optional<Double> price,

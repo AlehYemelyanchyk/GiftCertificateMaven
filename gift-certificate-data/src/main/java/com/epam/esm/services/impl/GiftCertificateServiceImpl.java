@@ -15,8 +15,14 @@ import java.util.Optional;
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
-    @Autowired
     private GiftCertificateDAO giftCertificateDAO;
+    private DAORepositoryManager daoManager;
+
+    @Autowired
+    public GiftCertificateServiceImpl(GiftCertificateDAO giftCertificateDAO, DAORepositoryManager daoManager) {
+        this.giftCertificateDAO = giftCertificateDAO;
+        this.daoManager = daoManager;
+    }
 
     @Override
     public List<TaggedGiftCertificate> findAll() throws ServiceException {
@@ -48,7 +54,10 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public Optional<TaggedGiftCertificate> save(TaggedGiftCertificate object) throws ServiceException {
         try {
-            return giftCertificateDAO.save(object);
+            if(object.getTags().isEmpty()){
+                return giftCertificateDAO.save(object, null);
+            }
+            return daoManager.save(object);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
