@@ -28,14 +28,14 @@ public final class DAOUtils {
     public static List<TaggedGiftCertificate> taggedGiftCertificatesListResultSetHandle(ResultSet resultSet) throws SQLException {
         List<TaggedGiftCertificate> certificates = new ArrayList<>();
         while (resultSet.next()) {
-            TaggedGiftCertificate tempCertificate = new TaggedGiftCertificate(
-                    resultSet.getLong("id"),
-                    resultSet.getString("name"),
-                    resultSet.getString("description"),
-                    resultSet.getDouble("price"),
-                    LocalDateTime.parse(resultSet.getString("create_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-                    LocalDateTime.parse(resultSet.getString("last_update_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-                    resultSet.getInt("duration"));
+            TaggedGiftCertificate tempCertificate = new TaggedGiftCertificate();
+            tempCertificate.setId(resultSet.getLong("id"));
+            tempCertificate.setName(resultSet.getString("name"));
+            tempCertificate.setDescription(resultSet.getString("description"));
+            tempCertificate.setPrice(resultSet.getDouble("price"));
+            tempCertificate.setCreateDate(LocalDateTime.parse(resultSet.getString("create_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            tempCertificate.setLastUpdateDate(LocalDateTime.parse(resultSet.getString("last_update_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            tempCertificate.setDuration(resultSet.getInt("duration"));
             certificates.add(tempCertificate);
         }
         return certificates;
@@ -45,14 +45,14 @@ public final class DAOUtils {
         Set<TaggedGiftCertificate> taggedGiftCertificatesSet = new LinkedHashSet<>();
 
         while (resultSet.next()) {
-            TaggedGiftCertificate tempCertificate = new TaggedGiftCertificate(
-                    resultSet.getLong("a.id"),
-                    resultSet.getString("a.name"),
-                    resultSet.getString("a.description"),
-                    resultSet.getDouble("a.price"),
-                    LocalDateTime.parse(resultSet.getString("a.create_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-                    LocalDateTime.parse(resultSet.getString("a.last_update_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-                    resultSet.getInt("a.duration"));
+            TaggedGiftCertificate tempCertificate = new TaggedGiftCertificate();
+            tempCertificate.setId(resultSet.getLong("a.id"));
+            tempCertificate.setName(resultSet.getString("a.name"));
+            tempCertificate.setDescription(resultSet.getString("a.description"));
+            tempCertificate.setPrice(resultSet.getDouble("a.price"));
+            tempCertificate.setCreateDate(LocalDateTime.parse(resultSet.getString("a.create_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            tempCertificate.setLastUpdateDate(LocalDateTime.parse(resultSet.getString("a.last_update_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            tempCertificate.setDuration(resultSet.getInt("a.duration"));
 
             Tag tempTag = new Tag(
                     resultSet.getInt("c.id"),

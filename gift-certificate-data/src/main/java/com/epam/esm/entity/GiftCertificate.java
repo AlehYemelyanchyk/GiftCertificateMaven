@@ -21,27 +21,6 @@ public class GiftCertificate implements Serializable {
     public GiftCertificate() {
     }
 
-    public GiftCertificate(String name, String description, Double price,
-                           LocalDateTime createDate, LocalDateTime lastUpdateDate, Integer duration) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.createDate = createDate;
-        this.lastUpdateDate = lastUpdateDate;
-        this.duration = duration;
-    }
-
-    public GiftCertificate(Long id, String name, String description, Double price,
-                           LocalDateTime createDate, LocalDateTime lastUpdateDate, Integer duration) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.createDate = createDate;
-        this.lastUpdateDate = lastUpdateDate;
-        this.duration = duration;
-    }
-
     public Long getId() {
         return id;
     }
