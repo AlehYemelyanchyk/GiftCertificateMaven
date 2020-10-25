@@ -85,53 +85,28 @@ public class SqlTagDAOImpl implements TagDAO {
     public Optional<Tag> save(Tag object, Connection connection) throws DAOException {
         Optional<Tag> returnObject;
 
-            try (PreparedStatement statementSave = connection.prepareStatement(Constants.SAVE_TAGS_SQL_QUERY);
-                 PreparedStatement statementFindByName = connection.prepareStatement(Constants.FIND_TAGS_BY_NAME_SQL_QUERY)
-            ) {
+        try (PreparedStatement statementFindByName = connection.prepareStatement(Constants.FIND_TAGS_BY_NAME_SQL_QUERY)) {
+            try (PreparedStatement statementSave = connection.prepareStatement(Constants.SAVE_TAGS_SQL_QUERY)) {
                 statementSave.setString(1, object.getName());
                 statementSave.executeUpdate();
+            } catch (SQLException e) {
+                LOGGER.error("save transaction failed error: " + e.getMessage());
+            }
                 statementFindByName.setString(1, object.getName());
                 try (ResultSet resultSet = statementFindByName.executeQuery()) {
                     returnObject = DAOUtils.tagsListResultSetHandle(resultSet).stream()
                             .findFirst();
                 }
             } catch (SQLException e) {
-                LOGGER.error("save transaction failed error: " + e.getMessage());
-                throw new DAOException(e);
+            LOGGER.error("find transaction failed error: " + e.getMessage());
+            throw new DAOException(e);
             }
-
         return returnObject;
     }
 
     @Override
-    public Optional<Tag> update(Tag object) throws DAOException {
-        Optional<Tag> returnObject;
-
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(false);
-            try (
-                    PreparedStatement statement1 = connection.prepareStatement(Constants.UPDATE_TAGS_SQL_QUERY);
-                    PreparedStatement statement2 = connection.prepareStatement(Constants.FIND_TAGS_BY_ID_SQL_QUERY)
-            ) {
-                statement1.setString(1, object.getName());
-                statement1.setInt(2, object.getId());
-                statement1.executeUpdate();
-                statement2.setInt(1, object.getId());
-                try (ResultSet resultSet = statement2.executeQuery()) {
-                    returnObject = DAOUtils.tagsListResultSetHandle(resultSet).stream()
-                            .findFirst();
-                }
-            } catch (SQLException e) {
-                connection.rollback();
-                LOGGER.error("update transaction failed error: " + e.getMessage());
-                throw e;
-            }
-            connection.commit();
-
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-        return returnObject;
+    public Optional<Tag> update(Tag object, Connection connection) throws DAOException {
+        return Optional.empty();
     }
 
     @Override

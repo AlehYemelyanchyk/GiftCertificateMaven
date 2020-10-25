@@ -1,6 +1,7 @@
 package com.epam.esm.model;
 
 public class SearchParametersHolder {
+    Long id;
     String tagName;
     String name;
     String description;
@@ -10,12 +11,12 @@ public class SearchParametersHolder {
     public SearchParametersHolder() {
     }
 
-    public SearchParametersHolder(String tagName, String name, String description, String sortBy, String sortOrder) {
-        this.tagName = tagName;
-        this.name = name;
-        this.description = description;
-        this.sortBy = sortBy;
-        this.sortOrder = sortOrder;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTagName() {
@@ -56,5 +57,17 @@ public class SearchParametersHolder {
 
     public void setSortOrder(String sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    @Override
+    public String toString() {
+        return "SearchParametersHolder{" +
+                "id=" + id +
+                ", tagName='" + tagName + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", sortBy='" + sortBy + '\'' +
+                ", sortOrder='" + sortOrder + '\'' +
+                '}';
     }
 }

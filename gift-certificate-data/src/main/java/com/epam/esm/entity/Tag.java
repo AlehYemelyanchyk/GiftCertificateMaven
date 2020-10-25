@@ -43,7 +43,8 @@ public class Tag implements Serializable {
     @Override
     public String toString() {
         return "Tag{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 '}';
     }
 
