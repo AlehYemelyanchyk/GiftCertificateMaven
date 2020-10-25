@@ -59,7 +59,9 @@ public final class DAOUtils {
                     resultSet.getString("c.name"));
 
             if (!taggedGiftCertificatesSet.contains(tempCertificate)) {
-                tempCertificate.getTags().add(tempTag);
+                if (tempTag.getName() != null) {
+                    tempCertificate.getTags().add(tempTag);
+                }
                 taggedGiftCertificatesSet.add(tempCertificate);
             } else {
                 for (TaggedGiftCertificate nextCertificate : taggedGiftCertificatesSet) {

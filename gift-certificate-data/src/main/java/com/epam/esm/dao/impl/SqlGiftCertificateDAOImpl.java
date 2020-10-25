@@ -177,9 +177,9 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
         String requestBegin =
                 "SELECT a.id, a.name, a.description, a.price, a.create_date, a.last_update_date, a.duration, c.id, c.name " +
                         "FROM gift_certificates.certificates as a " +
-                        "JOIN gift_certificates.tagged_certificates as b " +
+                        "LEFT OUTER JOIN gift_certificates.tagged_certificates as b " +
                         "ON a.id = b.certificate_id " +
-                        "JOIN gift_certificates.tags as c " +
+                        "LEFT OUTER JOIN gift_certificates.tags as c " +
                         "ON b.tag_id = c.id";
         String orderPart = " ORDER BY a.";
         Long id = searchParametersHolder.getId();
