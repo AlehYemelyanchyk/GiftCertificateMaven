@@ -42,7 +42,7 @@ public class TaggedGiftCertificateDAOImpl implements TaggedGiftCertificateDAO {
     public void save(GiftCertificate giftCertificate, Tag tag, Connection connection)
             throws DAOException {
         try {
-            try (PreparedStatement statement = connection.prepareStatement(Constants.SAVE_TAGGED_CERTIFICATE_SQL_QUERY);
+            try (PreparedStatement statement = connection.prepareStatement(Constants.SAVE_TAGGED_CERTIFICATE_SQL_QUERY)
             ) {
                 statement.setLong(1, giftCertificate.getId());
                 statement.setInt(2, tag.getId());
@@ -58,5 +58,22 @@ public class TaggedGiftCertificateDAOImpl implements TaggedGiftCertificateDAO {
 
     @Override
     public void update(GiftCertificate giftCertificate, Tag tag, Connection connection) throws DAOException {
+    }
+
+    @Override
+    public void delete(GiftCertificate giftCertificate, Tag tag, Connection connection) throws DAOException {
+        try {
+            try (PreparedStatement statement = connection.prepareStatement(Constants.DELETE_TAGS_CONNECTION_BY_ID_SQL_QUERY)
+            ) {
+                statement.setLong(1, giftCertificate.getId());
+                statement.setInt(2, tag.getId());
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                LOGGER.error("delete transaction failed error: " + e.getMessage());
+                throw e;
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
     }
 }

@@ -14,8 +14,12 @@ import java.util.Optional;
 @Service
 public class TagServiceImpl implements TagService {
 
-    @Autowired
     private TagDAO tagDAO;
+
+    @Autowired
+    public TagServiceImpl(TagDAO tagDAO) {
+        this.tagDAO = tagDAO;
+    }
 
     @Override
     public List<Tag> findAll() throws ServiceException {
@@ -36,27 +40,19 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Optional<Tag> findByName(String name) throws ServiceException {
-        try {
-            return tagDAO.findByName(name);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
-    }
-
-    @Override
     public Optional<Tag> save(Tag object) throws ServiceException {
-        try {
-            return tagDAO.save(object, null);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
+        return Optional.empty();
     }
 
     @Override
     public Optional<Tag> update(Tag object) throws ServiceException {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Tag> findByName(String name) throws ServiceException {
         try {
-            return tagDAO.update(object);
+            return tagDAO.findByName(name);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

@@ -17,7 +17,6 @@ public final class Constants {
     public static final String FIND_TAGS_BY_NAME_SQL_QUERY = "SELECT * FROM gift_certificates.tags WHERE name = ?";
     public static final String FIND_TAGS_BY_ID_SQL_QUERY = "SELECT * FROM gift_certificates.tags WHERE id = ?";
     public static final String SAVE_TAGS_SQL_QUERY = "INSERT INTO gift_certificates.tags (name) VALUES (?)";
-    public static final String UPDATE_TAGS_SQL_QUERY = "UPDATE gift_certificates.tags SET name = ? WHERE id = ?";
     public static final String DELETE_TAGS_BY_NAME_SQL_QUERY = "DELETE FROM gift_certificates.tags WHERE name = ?";
     public static final String DELETE_TAGS_BY_ID_SQL_QUERY = "DELETE FROM gift_certificates.tags WHERE id = ?";
     public static final String SAVE_TAGGED_CERTIFICATE_SQL_QUERY = "INSERT INTO gift_certificates.tagged_certificates " +
@@ -30,6 +29,8 @@ public final class Constants {
                     "JOIN gift_certificates.tags as c " +
                     "ON b.tag_id = c.id " +
                     "WHERE a.id = ?";
+    public static final String DELETE_TAGS_CONNECTION_BY_ID_SQL_QUERY = "DELETE FROM gift_certificates.tagged_certificates " +
+            "WHERE (certificate_id = ?) and (tag_id = ?)";
 
     private Constants() {
     }

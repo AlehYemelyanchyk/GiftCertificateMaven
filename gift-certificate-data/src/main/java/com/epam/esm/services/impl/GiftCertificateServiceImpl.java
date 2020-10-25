@@ -54,9 +54,6 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public Optional<TaggedGiftCertificate> save(TaggedGiftCertificate object) throws ServiceException {
         try {
-            if(object.getTags().isEmpty()){
-                return giftCertificateDAO.save(object, null);
-            }
             return daoManager.save(object);
         } catch (DAOException e) {
             throw new ServiceException(e);
@@ -66,7 +63,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public Optional<TaggedGiftCertificate> update(TaggedGiftCertificate object) throws ServiceException {
         try {
-            return giftCertificateDAO.update(object);
+            return daoManager.update(object);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }

@@ -105,34 +105,8 @@ public class SqlTagDAOImpl implements TagDAO {
     }
 
     @Override
-    public Optional<Tag> update(Tag object) throws DAOException {
-        Optional<Tag> returnObject;
-
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(false);
-            try (
-                    PreparedStatement statement1 = connection.prepareStatement(Constants.UPDATE_TAGS_SQL_QUERY);
-                    PreparedStatement statement2 = connection.prepareStatement(Constants.FIND_TAGS_BY_ID_SQL_QUERY)
-            ) {
-                statement1.setString(1, object.getName());
-                statement1.setInt(2, object.getId());
-                statement1.executeUpdate();
-                statement2.setInt(1, object.getId());
-                try (ResultSet resultSet = statement2.executeQuery()) {
-                    returnObject = DAOUtils.tagsListResultSetHandle(resultSet).stream()
-                            .findFirst();
-                }
-            } catch (SQLException e) {
-                connection.rollback();
-                LOGGER.error("update transaction failed error: " + e.getMessage());
-                throw e;
-            }
-            connection.commit();
-
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-        return returnObject;
+    public Optional<Tag> update(Tag object, Connection connection) throws DAOException {
+        return Optional.empty();
     }
 
     @Override

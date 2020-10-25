@@ -1,5 +1,6 @@
 package com.epam.esm.rest.controller;
 
+import com.epam.esm.entity.Tag;
 import com.epam.esm.model.SearchParametersHolder;
 import com.epam.esm.model.TaggedGiftCertificate;
 import com.epam.esm.rest.exceptions.ResourceNotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
@@ -63,7 +65,8 @@ public class GiftCertificateController {
     }
 
     @GetMapping("/certificates/findBy")
-    public List<TaggedGiftCertificate> findBy(@RequestParam Optional<String> tagName,
+    public List<TaggedGiftCertificate> findBy(@RequestParam Optional<Long> id,
+                                                @RequestParam Optional<String> tagName,
                                                 @RequestParam Optional<String> name,
                                                 @RequestParam Optional<String> description,
                                                 @RequestParam Optional<String> sortBy,
@@ -71,6 +74,7 @@ public class GiftCertificateController {
         List<TaggedGiftCertificate> returnObject;
 
         SearchParametersHolder searchParametersHolder = new SearchParametersHolder();
+        searchParametersHolder.setId(id.orElse(null));
         searchParametersHolder.setTagName(tagName.orElse(null));
         searchParametersHolder.setName(name.orElse(null));
         searchParametersHolder.setDescription(description.orElse(null));
@@ -94,7 +98,8 @@ public class GiftCertificateController {
                                              @RequestParam Optional<String> name,
                                              @RequestParam Optional<String> description,
                                              @RequestParam Optional<Double> price,
-                                             @RequestParam Optional<Integer> duration) {
+                                             @RequestParam Optional<Integer> duration,
+                                             @RequestParam Optional<Set<Tag>> tags) {
         TaggedGiftCertificate returnObject;
         TaggedGiftCertificate giftCertificate = new TaggedGiftCertificate();
         giftCertificate.setId(id);
@@ -102,6 +107,7 @@ public class GiftCertificateController {
         giftCertificate.setDescription(description.orElse(null));
         giftCertificate.setPrice(price.orElse(null));
         giftCertificate.setDuration(duration.orElse(null));
+        giftCertificate.setTags(tags.orElse(null));
 
         try {
             Optional<TaggedGiftCertificate> giftCertificateOptional =

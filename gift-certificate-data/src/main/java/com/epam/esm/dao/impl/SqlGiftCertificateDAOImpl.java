@@ -57,7 +57,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
              PreparedStatement statement = connection.prepareStatement(searchByRequestBuilder(searchParametersHolder))
         ) {
             try (ResultSet resultSet = statement.executeQuery()) {
-                returnList = DAOUtils.taggedGiftCertificatesListResultSetHandle(resultSet);
+                returnList = DAOUtils.taggedGiftCertificatesListTwoTablesResultSetHandle(resultSet);
             }
         } catch (Exception e) {
             throw new DAOException(e);
@@ -111,28 +111,16 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     }
 
     @Override
-    public Optional<TaggedGiftCertificate> update(TaggedGiftCertificate object) throws DAOException {
+    public Optional<TaggedGiftCertificate> update(TaggedGiftCertificate object, Connection connection) throws DAOException {
         Optional<TaggedGiftCertificate> returnObject;
 
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(false);
-            try (PreparedStatement statement1 =
-                         connection.prepareStatement(updateSqlRequestBuilder(object));
-                 PreparedStatement statement2 = connection.prepareStatement(Constants.FIND_CERTIFICATE_BY_ID_SQL_QUERY)
-            ) {
+        try (PreparedStatement statement1 = connection.prepareStatement(updateSqlRequestBuilder(object))) {
                 statement1.executeUpdate();
-                statement2.setLong(1, object.getId());
-                try (ResultSet resultSet = statement2.executeQuery()) {
-                    returnObject = DAOUtils.taggedGiftCertificatesListResultSetHandle(resultSet).stream()
-                            .findFirst();
-                }
+            SearchParametersHolder searchParametersHolder = new SearchParametersHolder();
+            searchParametersHolder.setId(object.getId());
+            returnObject = findBy(searchParametersHolder).stream().findFirst();
             } catch (SQLException e) {
-                connection.rollback();
                 LOGGER.error("update transaction failed error: " + e.getMessage());
-                throw e;
-            }
-            connection.commit();
-        } catch (SQLException e) {
             throw new DAOException(e);
         }
         return returnObject;
@@ -194,6 +182,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
                         "JOIN gift_certificates.tags as c " +
                         "ON b.tag_id = c.id";
         String orderPart = " ORDER BY a.";
+        Long id = searchParametersHolder.getId();
         String tagName = searchParametersHolder.getTagName();
         String name = searchParametersHolder.getName();
         String description = searchParametersHolder.getDescription();
@@ -202,6 +191,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
 
         StringBuilder sqlRequest = new StringBuilder();
         sqlRequest.append(requestBegin);
+        sqlRequest.append((id == null) ? "" : " WHERE a.id = " + id);
         sqlRequest.append((tagName == null) ? "" : " WHERE c.name LIKE '%" + tagName + "%'");
         sqlRequest.append((name == null) ? "" : " WHERE a.name LIKE '%" + name + "%'");
         sqlRequest.append((description == null) ? "" : " WHERE a.description LIKE '%" + description + "%'");

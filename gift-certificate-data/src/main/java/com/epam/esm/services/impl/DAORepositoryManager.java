@@ -45,12 +45,7 @@ public class DAORepositoryManager implements RepositoryManager<TaggedGiftCertifi
                 TaggedGiftCertificate returnCertificate = returnOptionalCertificate.orElseThrow(() ->
                         new SQLException("DB returned null certificate"));
                 Set<Tag> tags = object.getTags();
-                for (Tag tag : tags) {
-                    Optional<Tag> returnOptionalTag = tagDAO.save(tag, connection);
-                    Tag returnTag = returnOptionalTag.orElseThrow(() ->
-                            new SQLException("DB returned null tag"));
-                    taggedGiftCertificateDAO.save(returnCertificate, returnTag, connection);
-                }
+                saveTags(tags, returnCertificate, connection);
                 returnObject = taggedGiftCertificateDAO.findById(returnCertificate.getId(), connection);
             } catch (Exception e) {
                 connection.rollback();
@@ -66,6 +61,43 @@ public class DAORepositoryManager implements RepositoryManager<TaggedGiftCertifi
 
     @Override
     public Optional<TaggedGiftCertificate> update(TaggedGiftCertificate object) throws DAOException {
-        return Optional.empty();
+        Optional<TaggedGiftCertificate> returnObject;
+
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
+                Optional<TaggedGiftCertificate> returnOptionalCertificate = giftCertificateDAO.update(object, connection);
+                TaggedGiftCertificate returnCertificate = returnOptionalCertificate.orElseThrow(() ->
+                        new SQLException("DB returned null certificate"));
+                Set<Tag> tags = returnCertificate.getTags();
+                deleteTagsConnection(tags, returnCertificate, connection);
+                tags.addAll(object.getTags());
+                saveTags(tags, returnCertificate, connection);
+                returnObject = taggedGiftCertificateDAO.findById(returnCertificate.getId(), connection);
+            } catch (Exception e) {
+                connection.rollback();
+                throw e;
+            }
+            connection.commit();
+        } catch (Exception e) {
+            LOGGER.error("update transaction failed error: " + e.getMessage());
+            throw new DAOException(e);
+        }
+        return returnObject;
+    }
+
+    private void saveTags(Set<Tag> tags, TaggedGiftCertificate returnCertificate, Connection connection) throws SQLException, DAOException {
+        for (Tag tag : tags) {
+            Optional<Tag> returnOptionalTag = tagDAO.save(tag, connection);
+            Tag returnTag = returnOptionalTag.orElseThrow(() ->
+                    new SQLException("DB returned null tag"));
+            taggedGiftCertificateDAO.save(returnCertificate, returnTag, connection);
+        }
+    }
+
+    private void deleteTagsConnection(Set<Tag> tags, TaggedGiftCertificate returnCertificate, Connection connection) throws SQLException, DAOException {
+        for (Tag tag : tags) {
+            taggedGiftCertificateDAO.delete(returnCertificate, tag, connection);
+        }
     }
 }

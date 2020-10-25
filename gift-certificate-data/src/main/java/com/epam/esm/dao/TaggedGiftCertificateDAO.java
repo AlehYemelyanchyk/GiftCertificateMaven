@@ -17,4 +17,7 @@ public interface TaggedGiftCertificateDAO {
 
     void update(GiftCertificate giftCertificate, Tag tag, Connection connection)
             throws DAOException;
+
+    void delete(GiftCertificate giftCertificate, Tag tag, Connection connection)
+            throws DAOException;
 }
