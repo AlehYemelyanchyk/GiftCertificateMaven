@@ -41,7 +41,11 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Optional<Tag> save(Tag object) throws ServiceException {
-        return Optional.empty();
+        try {
+            return tagDAO.save(object);
+        } catch (DAOException e) {
+            throw new ServiceException(e);
+        }
     }
 
     @Override

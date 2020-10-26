@@ -84,6 +84,11 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     }
 
     @Override
+    public Optional<TaggedGiftCertificate> save(TaggedGiftCertificate object) throws DAOException {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<TaggedGiftCertificate> save(TaggedGiftCertificate object, Connection connection) throws DAOException {
         Optional<TaggedGiftCertificate> returnObject;
 
@@ -108,6 +113,11 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
                 throw new DAOException(e);
             }
         return returnObject;
+    }
+
+    @Override
+    public Optional<TaggedGiftCertificate> update(TaggedGiftCertificate object) throws DAOException {
+        return Optional.empty();
     }
 
     @Override

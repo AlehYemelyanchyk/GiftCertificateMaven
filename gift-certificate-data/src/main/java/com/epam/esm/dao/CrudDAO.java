@@ -2,7 +2,6 @@ package com.epam.esm.dao;
 
 import com.epam.esm.dao.exceptions.DAOException;
 
-import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +37,7 @@ public interface CrudDAO<T, ID> {
      * @return the saved entity or {@literal Optional#empty()} if none returned.
      * @throws DAOException if a SQLException is thrown from its invoked method.
      */
-    Optional<T> save(T object, Connection connection) throws DAOException;
+    Optional<T> save(T object) throws DAOException;
 
     /**
      * Updates a given entity. Use the returned instance for further operations as the update operation might have changed the
@@ -48,7 +47,7 @@ public interface CrudDAO<T, ID> {
      * @return the updated entity or {@literal Optional#empty()} if none returned.
      * @throws DAOException if a SQLException is thrown from its invoked method.
      */
-    Optional<T> update(T object, Connection connection) throws DAOException;
+    Optional<T> update(T object) throws DAOException;
 
     /**
      * Deletes a given entity.

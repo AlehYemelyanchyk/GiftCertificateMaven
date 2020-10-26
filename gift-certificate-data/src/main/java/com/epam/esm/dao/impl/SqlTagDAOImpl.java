@@ -82,6 +82,28 @@ public class SqlTagDAOImpl implements TagDAO {
     }
 
     @Override
+    public Optional<Tag> save(Tag object) throws DAOException {
+        Optional<Tag> returnObject;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(Constants.SAVE_TAGS_SQL_QUERY);
+             PreparedStatement statement2 = connection.prepareStatement(Constants.FIND_TAGS_BY_NAME_SQL_QUERY)
+        ) {
+            statement.setString(1, object.getName());
+            statement.executeUpdate();
+
+            statement2.setString(1, object.getName());
+            try (ResultSet resultSet = statement2.executeQuery()) {
+                returnObject = DAOUtils.tagsListResultSetHandle(resultSet).stream()
+                        .findFirst();
+            }
+        } catch (SQLException e) {
+            throw new DAOException(e);
+        }
+        return returnObject;
+    }
+
+    @Override
     public Optional<Tag> save(Tag object, Connection connection) throws DAOException {
         Optional<Tag> returnObject;
 
@@ -102,6 +124,11 @@ public class SqlTagDAOImpl implements TagDAO {
             throw new DAOException(e);
             }
         return returnObject;
+    }
+
+    @Override
+    public Optional<Tag> update(Tag object) throws DAOException {
+        return Optional.empty();
     }
 
     @Override
