@@ -18,7 +18,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 @Repository
-public class TaggedGiftCertificateDAOImpl implements TaggedGiftCertificateDAO {
+public class SqlTaggedGiftCertificateDAOImpl implements TaggedGiftCertificateDAO {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

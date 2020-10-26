@@ -16,5 +16,10 @@ public class AbstractIntegrationTest {
     public void executeSqlScript(String script) throws SQLException {
         Connection connection = dataSource.getConnection();
         ScriptUtils.executeSqlScript(connection, new ClassPathResource(script));
+        connection.close();
+    }
+
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 }

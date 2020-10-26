@@ -152,7 +152,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
 
     private String updateSqlRequestBuilder(GiftCertificate giftCertificate) {
         String updatePart = "UPDATE gift_certificates.certificates SET ";
-        String wherePart = " WHERE id = " + giftCertificate.getId();
+        String wherePart = " WHERE id_cert = " + giftCertificate.getId();
 
         String name = giftCertificate.getName();
         String description = giftCertificate.getDescription();
@@ -175,10 +175,10 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
 
     private String searchByRequestBuilder(SearchParametersHolder searchParametersHolder) {
         String requestBegin =
-                "SELECT a.id, a.name, a.description, a.price, a.create_date, a.last_update_date, a.duration, c.id, c.name " +
+                "SELECT a.id_cert, a.name, a.description, a.price, a.create_date, a.last_update_date, a.duration, c.id as id_tag, c.name as name_tag " +
                         "FROM gift_certificates.certificates as a " +
                         "LEFT OUTER JOIN gift_certificates.tagged_certificates as b " +
-                        "ON a.id = b.certificate_id " +
+                        "ON a.id_cert = b.certificate_id " +
                         "LEFT OUTER JOIN gift_certificates.tags as c " +
                         "ON b.tag_id = c.id";
         String orderPart = " ORDER BY a.";
@@ -191,7 +191,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
 
         StringBuilder sqlRequest = new StringBuilder();
         sqlRequest.append(requestBegin);
-        sqlRequest.append((id == null) ? "" : " WHERE a.id = " + id);
+        sqlRequest.append((id == null) ? "" : " WHERE a.id_cert = " + id);
         sqlRequest.append((tagName == null) ? "" : " WHERE c.name LIKE '%" + tagName + "%'");
         sqlRequest.append((name == null) ? "" : " WHERE a.name LIKE '%" + name + "%'");
         sqlRequest.append((description == null) ? "" : " WHERE a.description LIKE '%" + description + "%'");

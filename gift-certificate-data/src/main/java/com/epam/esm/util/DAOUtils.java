@@ -29,7 +29,7 @@ public final class DAOUtils {
         List<TaggedGiftCertificate> certificates = new ArrayList<>();
         while (resultSet.next()) {
             TaggedGiftCertificate tempCertificate = new TaggedGiftCertificate();
-            tempCertificate.setId(resultSet.getLong("id"));
+            tempCertificate.setId(resultSet.getLong("id_cert"));
             tempCertificate.setName(resultSet.getString("name"));
             tempCertificate.setDescription(resultSet.getString("description"));
             tempCertificate.setPrice(resultSet.getDouble("price"));
@@ -46,17 +46,17 @@ public final class DAOUtils {
 
         while (resultSet.next()) {
             TaggedGiftCertificate tempCertificate = new TaggedGiftCertificate();
-            tempCertificate.setId(resultSet.getLong("a.id"));
-            tempCertificate.setName(resultSet.getString("a.name"));
-            tempCertificate.setDescription(resultSet.getString("a.description"));
-            tempCertificate.setPrice(resultSet.getDouble("a.price"));
-            tempCertificate.setCreateDate(LocalDateTime.parse(resultSet.getString("a.create_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-            tempCertificate.setLastUpdateDate(LocalDateTime.parse(resultSet.getString("a.last_update_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-            tempCertificate.setDuration(resultSet.getInt("a.duration"));
+            tempCertificate.setId(resultSet.getLong("id_cert"));
+            tempCertificate.setName(resultSet.getString("name"));
+            tempCertificate.setDescription(resultSet.getString("description"));
+            tempCertificate.setPrice(resultSet.getDouble("price"));
+            tempCertificate.setCreateDate(LocalDateTime.parse(resultSet.getString("create_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            tempCertificate.setLastUpdateDate(LocalDateTime.parse(resultSet.getString("last_update_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            tempCertificate.setDuration(resultSet.getInt("duration"));
 
             Tag tempTag = new Tag(
-                    resultSet.getInt("c.id"),
-                    resultSet.getString("c.name"));
+                    resultSet.getInt("id_tag"),
+                    resultSet.getString("name_tag"));
 
             if (!taggedGiftCertificatesSet.contains(tempCertificate)) {
                 if (tempTag.getName() != null) {
