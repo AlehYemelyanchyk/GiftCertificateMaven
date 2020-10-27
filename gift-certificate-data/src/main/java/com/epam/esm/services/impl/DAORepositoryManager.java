@@ -71,7 +71,9 @@ public class DAORepositoryManager implements RepositoryManager<TaggedGiftCertifi
                         new SQLException("DB returned null certificate"));
                 Set<Tag> tags = returnCertificate.getTags();
                 deleteTagsConnection(tags, returnCertificate, connection);
-                tags.addAll(object.getTags());
+                if (object.getTags() != null) {
+                    tags.addAll(object.getTags());
+                }
                 saveTags(tags, returnCertificate, connection);
                 returnObject = taggedGiftCertificateDAO.findById(returnCertificate.getId(), connection);
             } catch (Exception e) {

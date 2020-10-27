@@ -18,8 +18,13 @@ public class TagController {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Autowired
+
     private TagService tagService;
+
+    @Autowired
+    public TagController(TagService tagService) {
+        this.tagService = tagService;
+    }
 
     @PostMapping("/tags")
     public Tag saveTag(@RequestBody Tag tag) {

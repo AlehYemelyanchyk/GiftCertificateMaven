@@ -21,8 +21,12 @@ public class GiftCertificateController {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Autowired
     private GiftCertificateService giftCertificateService;
+
+    @Autowired
+    public GiftCertificateController(GiftCertificateService giftCertificateService) {
+        this.giftCertificateService = giftCertificateService;
+    }
 
     @PostMapping("/certificates")
     public TaggedGiftCertificate savePortfolio(@RequestBody TaggedGiftCertificate giftCertificate) {
