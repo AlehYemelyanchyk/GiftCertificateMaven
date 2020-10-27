@@ -34,18 +34,19 @@ class SqlTaggedGiftCertificateDAOImplIntegrationTest extends AbstractIntegration
     private static final TaggedGiftCertificate EXPECTED_TAGGED_GIFT_CERTIFICATE = new TaggedGiftCertificate();
     private static final Optional<TaggedGiftCertificate> EXPECTED_OPTIONAL_GIFT_CERTIFICATE =
             Optional.of(EXPECTED_TAGGED_GIFT_CERTIFICATE);
-    private static final long TEST_ID = 5L;
-    private final static Tag TEST_TAG_TEST = new Tag( "test");
+    private static final long TEST_ID = 1L;
+    private final static Tag TEST_TAG = new Tag("test");
+    private final static Tag EXPECTED_TAG = new Tag(1, "red");
 
     @BeforeEach
     void create() throws SQLException {
         EXPECTED_TAGGED_GIFT_CERTIFICATE.setId(TEST_ID);
-        EXPECTED_TAGGED_GIFT_CERTIFICATE.setName("ABC");
-        EXPECTED_TAGGED_GIFT_CERTIFICATE.setDescription("New Year gift certificate");
+        EXPECTED_TAGGED_GIFT_CERTIFICATE.setName("SAS");
+        EXPECTED_TAGGED_GIFT_CERTIFICATE.setDescription("Hoho");
         EXPECTED_TAGGED_GIFT_CERTIFICATE.setPrice(15.99);
-        EXPECTED_TAGGED_GIFT_CERTIFICATE.setCreateDate(LocalDateTime.parse("2017-12-03T10:15:30+01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        EXPECTED_TAGGED_GIFT_CERTIFICATE.setLastUpdateDate(LocalDateTime.parse("2011-12-03T10:15:30+01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        EXPECTED_TAGGED_GIFT_CERTIFICATE.setDuration(31);
+        EXPECTED_TAGGED_GIFT_CERTIFICATE.setCreateDate(LocalDateTime.parse("2012-12-03T10:15:30+01:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        EXPECTED_TAGGED_GIFT_CERTIFICATE.setLastUpdateDate(LocalDateTime.parse("2020-10-21T09:01:56.713+03:00", DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        EXPECTED_TAGGED_GIFT_CERTIFICATE.setDuration(10);
 
         executeSqlScript("/create_schema.sql");
         executeSqlScript("/import_data.sql");
@@ -65,20 +66,23 @@ class SqlTaggedGiftCertificateDAOImplIntegrationTest extends AbstractIntegration
     }
 
     @Test
-    void saveTest() throws DAOException, SQLException {
+    void updateTest() throws SQLException, DAOException {
         Connection connection = getConnection();
-        List<TaggedGiftCertificate> listBeforeSave = sqlGiftCertificateDAO.findAll();
-        sqlTaggedGiftCertificateDAO.save(EXPECTED_TAGGED_GIFT_CERTIFICATE, TEST_TAG_TEST, connection);
-        List<TaggedGiftCertificate> listAfterSave = sqlGiftCertificateDAO.findAll();
-        assertEquals(listBeforeSave, listAfterSave);
+        Optional<TaggedGiftCertificate> beforeUpdate = sqlTaggedGiftCertificateDAO.findById(TEST_ID, connection);
+        EXPECTED_TAGGED_GIFT_CERTIFICATE.setName("New Name");
+        sqlTaggedGiftCertificateDAO.update(EXPECTED_TAGGED_GIFT_CERTIFICATE, TEST_TAG, connection);
+        Optional<TaggedGiftCertificate> afterUpdate = sqlTaggedGiftCertificateDAO.findById(TEST_ID, connection);
+        assertEquals(beforeUpdate, afterUpdate);
         connection.close();
     }
 
     @Test
-    void updateTest() {
-    }
-
-    @Test
-    void deleteTest() {
+    void deleteTest() throws SQLException, DAOException {
+        Connection connection = getConnection();
+        List<TaggedGiftCertificate> listBeforeSave = sqlGiftCertificateDAO.findAll();
+        sqlTaggedGiftCertificateDAO.delete(EXPECTED_TAGGED_GIFT_CERTIFICATE, EXPECTED_TAG, connection);
+        List<TaggedGiftCertificate> listAfterSave = sqlGiftCertificateDAO.findAll();
+        assertEquals(listBeforeSave, listAfterSave);
+        connection.close();
     }
 }
