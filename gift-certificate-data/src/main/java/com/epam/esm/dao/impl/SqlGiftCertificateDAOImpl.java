@@ -161,7 +161,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     }
 
     private String updateSqlRequestBuilder(GiftCertificate giftCertificate) {
-        String updatePart = "UPDATE gift_certificates.certificates SET ";
+        String updatePart = "UPDATE certificates SET ";
         String wherePart = " WHERE id_cert = " + giftCertificate.getId();
 
         String name = giftCertificate.getName();
@@ -186,10 +186,10 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     private String searchByRequestBuilder(SearchParametersHolder searchParametersHolder) {
         String requestBegin =
                 "SELECT a.id_cert, a.name, a.description, a.price, a.create_date, a.last_update_date, a.duration, c.id as id_tag, c.name as name_tag " +
-                        "FROM gift_certificates.certificates as a " +
-                        "LEFT OUTER JOIN gift_certificates.tagged_certificates as b " +
+                        "FROM certificates as a " +
+                        "LEFT OUTER JOIN tagged_certificates as b " +
                         "ON a.id_cert = b.certificate_id " +
-                        "LEFT OUTER JOIN gift_certificates.tags as c " +
+                        "LEFT OUTER JOIN tags as c " +
                         "ON b.tag_id = c.id";
         String orderPart = " ORDER BY a.";
         Long id = searchParametersHolder.getId();

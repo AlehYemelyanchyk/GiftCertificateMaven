@@ -24,7 +24,6 @@ class SqlTagDAOImplIntegrationTest extends AbstractIntegrationTest {
 
     private final static Tag EXPECTED_TAG = new Tag(1, "red");
     private final static Tag TEST_TAG_RED = new Tag(1, "red");
-    private final static Tag TEST_TAG_GREEN = new Tag(2, "green");
     private final static Tag TEST_TAG_TEST = new Tag( "test");
 
     @Autowired
@@ -64,6 +63,16 @@ class SqlTagDAOImplIntegrationTest extends AbstractIntegrationTest {
     @Test
     void saveTest() throws DAOException, SQLException {
         Connection connection = getConnection();
+        sqlTagDAO.save(TEST_TAG_TEST);
+        Optional<Tag> optionalTag = sqlTagDAO.findByName(TEST_TAG_TEST.getName());
+        Tag actualTag = optionalTag.orElse(null);
+        assertEquals(TEST_TAG_TEST, actualTag);
+        connection.close();
+    }
+
+    @Test
+    void saveWithConnectionTest() throws DAOException, SQLException {
+        Connection connection = getConnection();
         sqlTagDAO.save(TEST_TAG_TEST, connection);
         Optional<Tag> optionalTag = sqlTagDAO.findByName(TEST_TAG_TEST.getName());
         Tag actualTag = optionalTag.orElse(null);
@@ -73,6 +82,15 @@ class SqlTagDAOImplIntegrationTest extends AbstractIntegrationTest {
 
     @Test
     void updateTest() throws DAOException, SQLException {
+        Connection connection = getConnection();
+        Optional<Tag> optionalTag = sqlTagDAO.update(TEST_TAG_TEST);
+        Tag actualTag = optionalTag.orElse(null);
+        assertNull(actualTag);
+        connection.close();
+    }
+
+    @Test
+    void updateWithConnectionTest() throws DAOException, SQLException {
         Connection connection = getConnection();
         Optional<Tag> optionalTag = sqlTagDAO.update(TEST_TAG_TEST, connection);
         Tag actualTag = optionalTag.orElse(null);

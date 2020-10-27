@@ -1,6 +1,6 @@
 CREATE SCHEMA GIFT_CERTIFICATES;
 
-CREATE TABLE GIFT_CERTIFICATES.certificates (
+CREATE TABLE certificates (
   id_cert bigint NOT NULL AUTO_INCREMENT,
   name varchar(45) NOT NULL,
   description tinytext,
@@ -12,7 +12,7 @@ CREATE TABLE GIFT_CERTIFICATES.certificates (
   UNIQUE KEY id_cert_UNIQUE (id_cert)
   );
 
-CREATE TABLE GIFT_CERTIFICATES.tags (
+CREATE TABLE tags (
   id int NOT NULL AUTO_INCREMENT,
   name varchar(45) NOT NULL,
   PRIMARY KEY (id),
@@ -20,7 +20,7 @@ CREATE TABLE GIFT_CERTIFICATES.tags (
   UNIQUE KEY id_UNIQUE (id)
 );
 
-CREATE TABLE GIFT_CERTIFICATES.tagged_certificates (
+CREATE TABLE tagged_certificates (
   certificate_id bigint NOT NULL,
   tag_id int NOT NULL,
   PRIMARY KEY (certificate_id,tag_id),
