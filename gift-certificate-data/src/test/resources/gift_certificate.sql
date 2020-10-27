@@ -23,15 +23,15 @@ DROP TABLE IF EXISTS `certificates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `certificates` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
+  `id_cert` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
   `description` tinytext,
   `price` double NOT NULL,
   `create_date` varchar(45) NOT NULL,
   `last_update_date` varchar(45) NOT NULL,
   `duration` int NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`),
+  PRIMARY KEY (`id_cert`),
+  UNIQUE KEY `id_UNIQUE` (`id_cert`),
   KEY `create_date_INDEX` (`create_date`),
   KEY `name_INDEX` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -59,7 +59,7 @@ CREATE TABLE `tagged_certificates` (
   `tag_id` int NOT NULL,
   PRIMARY KEY (`certificate_id`,`tag_id`),
   KEY `fk_tag_id_idx` (`tag_id`),
-  CONSTRAINT `fk_certificate_id` FOREIGN KEY (`certificate_id`) REFERENCES `certificates` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_certificate_id` FOREIGN KEY (`certificate_id`) REFERENCES `certificates` (`id_cert`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_tag_id` FOREIGN KEY (`tag_id`) REFERENCES `tags` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -109,4 +109,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-10-25 15:27:48
+-- Dump completed on 2020-10-27 19:20:31

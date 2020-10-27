@@ -14,7 +14,7 @@ public class SpringTestDataConfig {
     public BasicDataSource getDataSource() {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setUrl("jdbc:h2:mem:db;DB_CLOSE_DELAY=-1");
+        dataSource.setUrl("jdbc:h2:mem:db;MODE=MySQL");
         dataSource.setUsername("sa");
         dataSource.setPassword("sa");
 
