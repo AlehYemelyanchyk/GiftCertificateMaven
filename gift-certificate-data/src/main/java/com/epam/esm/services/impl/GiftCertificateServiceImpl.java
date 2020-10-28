@@ -5,6 +5,7 @@ import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.model.SearchParametersHolder;
 import com.epam.esm.model.TaggedGiftCertificate;
 import com.epam.esm.services.GiftCertificateService;
+import com.epam.esm.services.RepositoryManager;
 import com.epam.esm.services.exceptions.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,10 +17,10 @@ import java.util.Optional;
 public class GiftCertificateServiceImpl implements GiftCertificateService {
 
     private GiftCertificateDAO giftCertificateDAO;
-    private DAORepositoryManager daoManager;
+    private RepositoryManager daoManager;
 
     @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDAO giftCertificateDAO, DAORepositoryManager daoManager) {
+    public GiftCertificateServiceImpl(GiftCertificateDAO giftCertificateDAO, RepositoryManager daoManager) {
         this.giftCertificateDAO = giftCertificateDAO;
         this.daoManager = daoManager;
     }

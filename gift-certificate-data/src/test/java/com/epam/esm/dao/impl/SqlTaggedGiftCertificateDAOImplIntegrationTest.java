@@ -1,6 +1,8 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.config.SpringTestDataConfig;
+import com.epam.esm.dao.GiftCertificateDAO;
+import com.epam.esm.dao.TaggedGiftCertificateDAO;
 import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.model.TaggedGiftCertificate;
@@ -26,10 +28,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SqlTaggedGiftCertificateDAOImplIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
-    SqlGiftCertificateDAOImpl sqlGiftCertificateDAO;
+    GiftCertificateDAO sqlGiftCertificateDAO;
 
     @Autowired
-    SqlTaggedGiftCertificateDAOImpl sqlTaggedGiftCertificateDAO;
+    TaggedGiftCertificateDAO sqlTaggedGiftCertificateDAO;
 
     private static final TaggedGiftCertificate EXPECTED_TAGGED_GIFT_CERTIFICATE = new TaggedGiftCertificate();
     private static final Optional<TaggedGiftCertificate> EXPECTED_OPTIONAL_GIFT_CERTIFICATE =

@@ -1,6 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.config.SpringTestDataConfig;
+import com.epam.esm.dao.TagDAO;
 import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.Tag;
 import org.junit.jupiter.api.AfterEach;
@@ -27,7 +28,7 @@ class SqlTagDAOImplIntegrationTest extends AbstractIntegrationTest {
     private final static Tag TEST_TAG_TEST = new Tag( "test");
 
     @Autowired
-    private SqlTagDAOImpl sqlTagDAO;
+    private TagDAO sqlTagDAO;
 
     @BeforeEach
     void init() throws SQLException {

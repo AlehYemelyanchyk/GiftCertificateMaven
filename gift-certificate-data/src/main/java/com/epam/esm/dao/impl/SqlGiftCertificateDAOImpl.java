@@ -7,12 +7,12 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.model.SearchParametersHolder;
 import com.epam.esm.model.TaggedGiftCertificate;
 import com.epam.esm.util.DAOUtils;
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,10 +26,10 @@ import java.util.Optional;
 public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final BasicDataSource dataSource;
+    private final DataSource dataSource;
 
     @Autowired
-    public SqlGiftCertificateDAOImpl(BasicDataSource dataSource) {
+    public SqlGiftCertificateDAOImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 

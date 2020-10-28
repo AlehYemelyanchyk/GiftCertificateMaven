@@ -5,12 +5,12 @@ import com.epam.esm.dao.TagDAO;
 import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.util.DAOUtils;
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,10 +22,10 @@ import java.util.Optional;
 public class SqlTagDAOImpl implements TagDAO {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final BasicDataSource dataSource;
+    private final DataSource dataSource;
 
     @Autowired
-    public SqlTagDAOImpl(BasicDataSource dataSource) {
+    public SqlTagDAOImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 

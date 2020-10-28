@@ -18,7 +18,6 @@ public class TagController {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-
     private TagService tagService;
 
     @Autowired

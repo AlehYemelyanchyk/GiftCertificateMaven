@@ -1,6 +1,7 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.config.SpringTestDataConfig;
+import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.model.SearchParametersHolder;
 import com.epam.esm.model.TaggedGiftCertificate;
@@ -26,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SqlGiftCertificateDAOImplIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
-    SqlGiftCertificateDAOImpl sqlGiftCertificateDAO;
+    GiftCertificateDAO sqlGiftCertificateDAO;
 
     private static final TaggedGiftCertificate EXPECTED_TAGGED_GIFT_CERTIFICATE = new TaggedGiftCertificate();
     private static final SearchParametersHolder TEST_SEARCH_PARAMETERS_HOLDER = new SearchParametersHolder();

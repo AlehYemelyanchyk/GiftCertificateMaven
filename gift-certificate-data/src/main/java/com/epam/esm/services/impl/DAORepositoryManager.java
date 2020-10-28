@@ -7,11 +7,11 @@ import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.model.TaggedGiftCertificate;
 import com.epam.esm.services.RepositoryManager;
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -21,12 +21,12 @@ import java.util.Set;
 public class DAORepositoryManager implements RepositoryManager<TaggedGiftCertificate> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final BasicDataSource dataSource;
+    private final DataSource dataSource;
     private GiftCertificateDAO giftCertificateDAO;
     private TagDAO tagDAO;
     private TaggedGiftCertificateDAO taggedGiftCertificateDAO;
 
-    public DAORepositoryManager(BasicDataSource dataSource, GiftCertificateDAO giftCertificateDAO,
+    public DAORepositoryManager(DataSource dataSource, GiftCertificateDAO giftCertificateDAO,
                                 TagDAO tagDAO, TaggedGiftCertificateDAO taggedGiftCertificateDAO) {
         this.dataSource = dataSource;
         this.giftCertificateDAO = giftCertificateDAO;
