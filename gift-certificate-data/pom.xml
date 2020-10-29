@@ -10,86 +10,81 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <spring.version>5.2.9.RELEASE</spring.version>
-        <log4j.version>2.13.2</log4j.version>
-        <junit.jupiter.version>5.5.2</junit.jupiter.version>
         <junit.platform.version>1.0.1</junit.platform.version>
-        <junit.vintage.version>4.12.2</junit.vintage.version>
+        <junit.jupiter.version>5.7.0</junit.jupiter.version>
+        <junit.vintage.version>5.2.0</junit.vintage.version>
+        <mysql.connector.version>8.0.21</mysql.connector.version>
+        <commons.dbcp.version>1.2.2</commons.dbcp.version>
+        <mockito.junit.version>2.23.0</mockito.junit.version>
+        <mockito.version>3.5.15</mockito.version>
+        <h2.version>1.4.200</h2.version>
     </properties>
 
     <artifactId>gift-certificate-data</artifactId>
 
     <dependencies>
+        <!-- Spring JDBC -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
         <!-- MySql connector -->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.21</version>
+            <version>${mysql.connector.version}</version>
         </dependency>
 
         <!-- Database connection pooling -->
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
-            <version>1.2.2</version>
-        </dependency>
-
-        <!-- Add Logger -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${log4j.version}</version>
+            <version>${commons.dbcp.version}</version>
         </dependency>
 
         <!-- Add JUnit 5 for tests -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.7.0</version>
+            <version>${junit.jupiter.version}</version>
         </dependency>
 
         <!-- Add Mockito for tests -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.5.15</version>
-        </dependency>
-
-        <!-- Add Surefire plugin dependency -->
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-
-        <!-- JUnit 4 IDE Compatibility Dependencies -->
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-runner</artifactId>
-            <version>1.2.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>5.2.0</version>
-            <scope>test</scope>
+            <version>${mockito.version}</version>
         </dependency>
 
         <!-- Add Mockito Extension -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>2.23.0</version>
+            <version>${mockito.junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Add Surefire plugin dependency -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-surefire-provider</artifactId>
+            <version>${junit.platform.version}</version>
+        </dependency>
+
+        <!-- JUnit 4 IDE Compatibility Dependencies -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-runner</artifactId>
+            <version>${junit.platform.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit.vintage.version}</version>
             <scope>test</scope>
         </dependency>
 
@@ -101,11 +96,11 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- In memory DBs  -->
+        <!-- In-memory DBs  -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.200</version>
+            <version>${h2.version}</version>
             <scope>test</scope>
         </dependency>
 
