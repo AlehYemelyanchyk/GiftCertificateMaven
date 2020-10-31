@@ -1,7 +1,5 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.dao.exceptions.DAOException;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +14,6 @@ public interface CrudDAO<T, ID> {
      * Returns all instances of the type.
      *
      * @return all entities.
-     * @throws DAOException if an SQLException is thrown from its invoked method.
      */
     List<T> findAll();
 
@@ -25,7 +22,6 @@ public interface CrudDAO<T, ID> {
      *
      * @param id must not be {@literal null}.
      * @return the entity with the given id or {@literal Optional#empty()} if none found.
-     * @throws DAOException if a SQLException is thrown from its invoked method.
      */
     Optional<T> findById(ID id);
 
@@ -35,7 +31,6 @@ public interface CrudDAO<T, ID> {
      *
      * @param object must not be {@literal null}.
      * @return the saved entity or {@literal Optional#empty()} if none returned.
-     * @throws DAOException if a SQLException is thrown from its invoked method.
      */
     Optional<T> save(T object);
 
@@ -45,7 +40,6 @@ public interface CrudDAO<T, ID> {
      *
      * @param object must not be {@literal null}.
      * @return the updated entity or {@literal Optional#empty()} if none returned.
-     * @throws DAOException if a SQLException is thrown from its invoked method.
      */
     Optional<T> update(T object);
 
@@ -53,7 +47,6 @@ public interface CrudDAO<T, ID> {
      * Deletes a given entity.
      *
      * @param object must not be {@literal null}.
-     * @throws DAOException if a SQLException is thrown from its invoked method.
      */
     void delete(T object);
 
@@ -61,7 +54,6 @@ public interface CrudDAO<T, ID> {
      * Deletes the entity with the given id.
      *
      * @param id must not be {@literal null}.
-     * @throws DAOException if a SQLException is thrown from its invoked method.
      */
     void deleteById(ID id);
 }

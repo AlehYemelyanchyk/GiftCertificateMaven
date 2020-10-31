@@ -3,25 +3,19 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.config.SpringTestDataConfig;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.TaggedGiftCertificateDAO;
-import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.model.TaggedGiftCertificate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SpringTestDataConfig.class})
@@ -57,34 +51,5 @@ class SqlTaggedGiftCertificateDAOImplIntegrationTest extends AbstractIntegration
     @AfterEach
     void clean() throws SQLException {
         executeSqlScript("/drop_schema.sql");
-    }
-
-    @Test
-    void findByIdTest() throws SQLException, DAOException {
-        Connection connection = getConnection();
-        Optional<TaggedGiftCertificate> actualCertificate = sqlTaggedGiftCertificateDAO.findById(TEST_ID);
-        assertEquals(EXPECTED_OPTIONAL_GIFT_CERTIFICATE, actualCertificate);
-        connection.close();
-    }
-
-    @Test
-    void updateTest() throws SQLException, DAOException {
-        Connection connection = getConnection();
-        Optional<TaggedGiftCertificate> beforeUpdate = sqlTaggedGiftCertificateDAO.findById(TEST_ID);
-        EXPECTED_TAGGED_GIFT_CERTIFICATE.setName("New Name");
-        sqlTaggedGiftCertificateDAO.update(EXPECTED_TAGGED_GIFT_CERTIFICATE, TEST_TAG);
-        Optional<TaggedGiftCertificate> afterUpdate = sqlTaggedGiftCertificateDAO.findById(TEST_ID);
-        assertEquals(beforeUpdate, afterUpdate);
-        connection.close();
-    }
-
-    @Test
-    void deleteTest() throws SQLException, DAOException {
-        Connection connection = getConnection();
-        List<TaggedGiftCertificate> listBeforeSave = sqlGiftCertificateDAO.findAll();
-        sqlTaggedGiftCertificateDAO.delete(EXPECTED_TAGGED_GIFT_CERTIFICATE, EXPECTED_TAG);
-        List<TaggedGiftCertificate> listAfterSave = sqlGiftCertificateDAO.findAll();
-        assertEquals(listBeforeSave, listAfterSave);
-        connection.close();
     }
 }

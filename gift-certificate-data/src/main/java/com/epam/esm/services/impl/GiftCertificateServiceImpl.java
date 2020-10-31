@@ -45,13 +45,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Transactional
     @Override
     public List<TaggedGiftCertificate> findBy(SearchParametersHolder searchParametersHolder) throws ServiceException {
-        List<TaggedGiftCertificate> taggedGiftCertificates;
-        try {
-            taggedGiftCertificates = giftCertificateDAO.findBy(searchParametersHolder);
-            taggedGiftCertificates.forEach(this::getAllTags);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
+        List<TaggedGiftCertificate> taggedGiftCertificates = giftCertificateDAO.findBy(searchParametersHolder);
+        taggedGiftCertificates.forEach(this::getAllTags);
         return taggedGiftCertificates;
     }
 
@@ -111,13 +106,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         return optionalTaggedGiftCertificate;
     }
 
-    @Transactional
     @Override
     public void delete(TaggedGiftCertificate object) throws ServiceException {
         giftCertificateDAO.delete(object);
     }
 
-    @Transactional
     @Override
     public void deleteById(Long id) throws ServiceException {
         giftCertificateDAO.deleteById(id);
