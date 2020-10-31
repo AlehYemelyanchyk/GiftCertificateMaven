@@ -18,7 +18,7 @@ public interface CrudDAO<T, ID> {
      * @return all entities.
      * @throws DAOException if an SQLException is thrown from its invoked method.
      */
-    List<T> findAll() throws DAOException;
+    List<T> findAll();
 
     /**
      * Returns whether an entity with the given id exists.
@@ -27,7 +27,7 @@ public interface CrudDAO<T, ID> {
      * @return the entity with the given id or {@literal Optional#empty()} if none found.
      * @throws DAOException if a SQLException is thrown from its invoked method.
      */
-    Optional<T> findById(ID id) throws DAOException;
+    Optional<T> findById(ID id);
 
     /**
      * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
@@ -37,7 +37,7 @@ public interface CrudDAO<T, ID> {
      * @return the saved entity or {@literal Optional#empty()} if none returned.
      * @throws DAOException if a SQLException is thrown from its invoked method.
      */
-    Optional<T> save(T object) throws DAOException;
+    Optional<T> save(T object);
 
     /**
      * Updates a given entity. Use the returned instance for further operations as the update operation might have changed the
@@ -47,7 +47,7 @@ public interface CrudDAO<T, ID> {
      * @return the updated entity or {@literal Optional#empty()} if none returned.
      * @throws DAOException if a SQLException is thrown from its invoked method.
      */
-    Optional<T> update(T object) throws DAOException;
+    Optional<T> update(T object);
 
     /**
      * Deletes a given entity.
@@ -55,7 +55,7 @@ public interface CrudDAO<T, ID> {
      * @param object must not be {@literal null}.
      * @throws DAOException if a SQLException is thrown from its invoked method.
      */
-    void delete(T object) throws DAOException;
+    void delete(T object);
 
     /**
      * Deletes the entity with the given id.
@@ -63,5 +63,5 @@ public interface CrudDAO<T, ID> {
      * @param id must not be {@literal null}.
      * @throws DAOException if a SQLException is thrown from its invoked method.
      */
-    void deleteById(ID id) throws DAOException;
+    void deleteById(ID id);
 }

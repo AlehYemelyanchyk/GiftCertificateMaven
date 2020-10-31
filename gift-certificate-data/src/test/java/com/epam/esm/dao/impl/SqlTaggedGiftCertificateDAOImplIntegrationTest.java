@@ -62,7 +62,7 @@ class SqlTaggedGiftCertificateDAOImplIntegrationTest extends AbstractIntegration
     @Test
     void findByIdTest() throws SQLException, DAOException {
         Connection connection = getConnection();
-        Optional<TaggedGiftCertificate> actualCertificate = sqlTaggedGiftCertificateDAO.findById(TEST_ID, connection);
+        Optional<TaggedGiftCertificate> actualCertificate = sqlTaggedGiftCertificateDAO.findById(TEST_ID);
         assertEquals(EXPECTED_OPTIONAL_GIFT_CERTIFICATE, actualCertificate);
         connection.close();
     }
@@ -70,10 +70,10 @@ class SqlTaggedGiftCertificateDAOImplIntegrationTest extends AbstractIntegration
     @Test
     void updateTest() throws SQLException, DAOException {
         Connection connection = getConnection();
-        Optional<TaggedGiftCertificate> beforeUpdate = sqlTaggedGiftCertificateDAO.findById(TEST_ID, connection);
+        Optional<TaggedGiftCertificate> beforeUpdate = sqlTaggedGiftCertificateDAO.findById(TEST_ID);
         EXPECTED_TAGGED_GIFT_CERTIFICATE.setName("New Name");
-        sqlTaggedGiftCertificateDAO.update(EXPECTED_TAGGED_GIFT_CERTIFICATE, TEST_TAG, connection);
-        Optional<TaggedGiftCertificate> afterUpdate = sqlTaggedGiftCertificateDAO.findById(TEST_ID, connection);
+        sqlTaggedGiftCertificateDAO.update(EXPECTED_TAGGED_GIFT_CERTIFICATE, TEST_TAG);
+        Optional<TaggedGiftCertificate> afterUpdate = sqlTaggedGiftCertificateDAO.findById(TEST_ID);
         assertEquals(beforeUpdate, afterUpdate);
         connection.close();
     }
@@ -82,7 +82,7 @@ class SqlTaggedGiftCertificateDAOImplIntegrationTest extends AbstractIntegration
     void deleteTest() throws SQLException, DAOException {
         Connection connection = getConnection();
         List<TaggedGiftCertificate> listBeforeSave = sqlGiftCertificateDAO.findAll();
-        sqlTaggedGiftCertificateDAO.delete(EXPECTED_TAGGED_GIFT_CERTIFICATE, EXPECTED_TAG, connection);
+        sqlTaggedGiftCertificateDAO.delete(EXPECTED_TAGGED_GIFT_CERTIFICATE, EXPECTED_TAG);
         List<TaggedGiftCertificate> listAfterSave = sqlGiftCertificateDAO.findAll();
         assertEquals(listBeforeSave, listAfterSave);
         connection.close();

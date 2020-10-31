@@ -39,9 +39,6 @@ class GiftCertificateServiceImplTest {
     @Mock
     private GiftCertificateDAO giftCertificateDAO;
 
-    @Mock
-    private DAORepositoryManager daoManager;
-
     @Before
     public void init() {
         EXPECTED_TAGGED_GIFT_CERTIFICATE.setName("Test");
@@ -106,27 +103,27 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void saveTest() throws DAOException, ServiceException {
-        Mockito.when(daoManager.save(EXPECTED_TAGGED_GIFT_CERTIFICATE)).thenReturn(EXPECTED_OPTIONAL_GIFT_CERTIFICATE);
+        Mockito.when(giftCertificateDAO.save(EXPECTED_TAGGED_GIFT_CERTIFICATE)).thenReturn(EXPECTED_OPTIONAL_GIFT_CERTIFICATE);
         Optional<TaggedGiftCertificate> actualGiftCertificate = giftCertificateService.save(EXPECTED_TAGGED_GIFT_CERTIFICATE);
         assertEquals(EXPECTED_OPTIONAL_GIFT_CERTIFICATE, actualGiftCertificate);
     }
 
     @Test
     void saveExceptionTest() throws DAOException {
-        Mockito.when(daoManager.save(EXPECTED_TAGGED_GIFT_CERTIFICATE)).thenThrow(DAOException.class);
+        Mockito.when(giftCertificateDAO.save(EXPECTED_TAGGED_GIFT_CERTIFICATE)).thenThrow(DAOException.class);
         assertThrows(ServiceException.class, () -> giftCertificateService.save(EXPECTED_TAGGED_GIFT_CERTIFICATE));
     }
 
     @Test
     void updateUpdate() throws DAOException, ServiceException {
-        Mockito.when(daoManager.update(EXPECTED_TAGGED_GIFT_CERTIFICATE)).thenReturn(EXPECTED_OPTIONAL_GIFT_CERTIFICATE);
+        Mockito.when(giftCertificateDAO.update(EXPECTED_TAGGED_GIFT_CERTIFICATE)).thenReturn(EXPECTED_OPTIONAL_GIFT_CERTIFICATE);
         Optional<TaggedGiftCertificate> actualGiftCertificate = giftCertificateService.update(EXPECTED_TAGGED_GIFT_CERTIFICATE);
         assertEquals(EXPECTED_OPTIONAL_GIFT_CERTIFICATE, actualGiftCertificate);
     }
 
     @Test
     void updateExceptionTest() throws DAOException {
-        Mockito.when(daoManager.update(EXPECTED_TAGGED_GIFT_CERTIFICATE)).thenThrow(DAOException.class);
+        Mockito.when(giftCertificateDAO.update(EXPECTED_TAGGED_GIFT_CERTIFICATE)).thenThrow(DAOException.class);
         assertThrows(ServiceException.class, () -> giftCertificateService.update(EXPECTED_TAGGED_GIFT_CERTIFICATE));
     }
 

@@ -1,13 +1,11 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.TagDAO;
-import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.Tag;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +43,7 @@ public class SqlTagDAOImpl implements TagDAO {
     }
 
     @Override
-    public Optional<Tag> findByName(String name) throws DAOException {
+    public Optional<Tag> findByName(String name){
         return jdbcTemplate.query(
                 FIND_TAGS_BY_NAME_SQL_QUERY,
                 new Object[]{name},
@@ -54,7 +52,7 @@ public class SqlTagDAOImpl implements TagDAO {
     }
 
     @Override
-    public Optional<Tag> save(Tag object) throws DAOException {
+    public Optional<Tag> save(Tag object){
         jdbcTemplate.update(
                 SAVE_TAGS_SQL_QUERY,
                 object.getName()
@@ -63,25 +61,16 @@ public class SqlTagDAOImpl implements TagDAO {
     }
 
     @Override
-    public Optional<Tag> save(Tag object, Connection connection) {
+    public Optional<Tag> update(Tag object){
         return Optional.empty();
     }
 
     @Override
-    public Optional<Tag> update(Tag object) {
-        return Optional.empty();
-    }
-
-    @Override
-    public void delete(Tag object) throws DAOException {
-        try {
-            jdbcTemplate.update(
+    public void delete(Tag object) {
+        jdbcTemplate.update(
                     DELETE_TAGS_BY_NAME_SQL_QUERY,
                     object.getId()
-            );
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
+        );
     }
 
     @Override

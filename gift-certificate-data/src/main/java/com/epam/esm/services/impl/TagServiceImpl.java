@@ -1,7 +1,6 @@
 package com.epam.esm.services.impl;
 
 import com.epam.esm.dao.TagDAO;
-import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.services.TagService;
 import com.epam.esm.services.exceptions.ServiceException;
@@ -24,30 +23,18 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public List<Tag> findAll() throws ServiceException {
-        try {
             return tagDAO.findAll();
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
     }
 
     @Override
     public Optional<Tag> findById(Integer id) throws ServiceException {
-        try {
             return tagDAO.findById(id);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
     }
 
     @Transactional
     @Override
     public Optional<Tag> save(Tag object) throws ServiceException {
-        try {
             return tagDAO.save(object);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
     }
 
     @Override
@@ -57,28 +44,16 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Optional<Tag> findByName(String name) throws ServiceException {
-        try {
             return tagDAO.findByName(name);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
     }
 
     @Override
     public void delete(Tag object) throws ServiceException {
-        try {
             tagDAO.delete(object);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
     }
 
     @Override
     public void deleteById(Integer id) throws ServiceException {
-        try {
             tagDAO.deleteById(id);
-        } catch (DAOException e) {
-            throw new ServiceException(e);
-        }
     }
 }

@@ -74,7 +74,7 @@ class SqlTagDAOImplIntegrationTest extends AbstractIntegrationTest {
     @Test
     void saveWithConnectionTest() throws DAOException, SQLException {
         Connection connection = getConnection();
-        sqlTagDAO.save(TEST_TAG_TEST, connection);
+        sqlTagDAO.save(TEST_TAG_TEST);
         Optional<Tag> optionalTag = sqlTagDAO.findByName(TEST_TAG_TEST.getName());
         Tag actualTag = optionalTag.orElse(null);
         assertEquals(TEST_TAG_TEST, actualTag);

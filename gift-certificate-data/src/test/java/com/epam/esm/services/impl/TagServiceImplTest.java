@@ -82,7 +82,7 @@ class TagServiceImplTest {
 
     @Test
     void saveTest() throws DAOException, ServiceException {
-        Mockito.when(tagDAO.save(EXPECTED_TAG, null)).thenReturn(Optional.empty());
+        Mockito.when(tagDAO.save(EXPECTED_TAG)).thenReturn(Optional.empty());
         Optional<Tag> actualTag = tagService.save(EXPECTED_TAG);
         assertEquals(Optional.empty(), actualTag);
     }

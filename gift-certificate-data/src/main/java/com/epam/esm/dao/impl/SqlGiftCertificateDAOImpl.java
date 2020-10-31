@@ -1,27 +1,20 @@
 package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.GiftCertificateDAO;
-import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
 import com.epam.esm.model.SearchParametersHolder;
 import com.epam.esm.model.TaggedGiftCertificate;
-import com.epam.esm.util.DAOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
@@ -49,36 +42,16 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     public List<TaggedGiftCertificate> findAll() {
         return jdbcTemplate.query(
                 FIND_ALL_CERTIFICATES_SQL_QUERY,
-                this::mapResultSetOneTable
+                this::mapCertificatesResultSet
         );
     }
 
     @Override
     public List<TaggedGiftCertificate> findBy(SearchParametersHolder searchParametersHolder) {
-        Set<TaggedGiftCertificate> taggedGiftCertificatesSet = new LinkedHashSet<>();
-        List<TaggedGiftCertificate> query = jdbcTemplate.query(
+        return jdbcTemplate.query(
                 searchByRequestBuilder(searchParametersHolder),
-                this::mapResultSetTwoTables
+                this::mapCertificatesResultSet
         );
-        return query;
-    }
-
-    private TaggedGiftCertificate mapResultSetTwoTables(ResultSet rs, int rowNum) throws SQLException {
-        TaggedGiftCertificate tempCertificate = new TaggedGiftCertificate();
-        tempCertificate.setId(rs.getLong("id_cert"));
-        tempCertificate.setName(rs.getString("name"));
-        tempCertificate.setDescription(rs.getString("description"));
-        tempCertificate.setPrice(rs.getDouble("price"));
-        tempCertificate.setCreateDate(LocalDateTime.parse(rs.getString("create_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        tempCertificate.setLastUpdateDate(LocalDateTime.parse(rs.getString("last_update_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
-        tempCertificate.setDuration(rs.getInt("duration"));
-
-        Tag tempTag = new Tag(
-                rs.getInt("id_tag"),
-                rs.getString("name_tag"));
-
-        tempCertificate.getTags().add(tempTag);
-        return tempCertificate;
     }
 
     @Override
@@ -86,7 +59,7 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
         return jdbcTemplate.query(
                 FIND_CERTIFICATE_BY_ID_SQL_QUERY,
                 new Object[]{id},
-                this::mapResultSetOneTable
+                this::mapCertificatesResultSet
         ).stream().findFirst();
     }
 
@@ -94,67 +67,27 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     public Optional<TaggedGiftCertificate> save(TaggedGiftCertificate object) {
         jdbcTemplate.update(
                 SAVE_CERTIFICATE_SQL_QUERY,
-                object.getName()
+                object.getName(),
+                object.getDescription(),
+                object.getPrice(),
+                formatDate(),
+                formatDate(),
+                object.getDuration()
         );
         return jdbcTemplate.query(
                 FIND_LAST_CERTIFICATES_BY_NAME_SQL_QUERY,
                 new Object[]{object.getName()},
-                this::mapResultSetOneTable
+                this::mapCertificatesResultSet
         ).stream().findFirst();
     }
 
-    @Override
-    public Optional<TaggedGiftCertificate> save(TaggedGiftCertificate object, Connection connection) throws DAOException {
-        Optional<TaggedGiftCertificate> returnObject;
-
-        try (PreparedStatement statement1 = connection.prepareStatement(SAVE_CERTIFICATE_SQL_QUERY);
-             PreparedStatement statement2 = connection.prepareStatement(FIND_LAST_CERTIFICATES_BY_NAME_SQL_QUERY);
-            ) {
-                statement1.setString(1, object.getName());
-                statement1.setString(2, object.getDescription());
-                statement1.setDouble(3, object.getPrice());
-                statement1.setString(4, formatDate());
-                statement1.setString(5, formatDate());
-                statement1.setInt(6, object.getDuration());
-                statement1.executeUpdate();
-
-                statement2.setString(1, object.getName());
-                try (ResultSet resultSet = statement2.executeQuery()) {
-                    returnObject = DAOUtils.taggedGiftCertificatesListResultSetHandle(resultSet).stream()
-                            .findFirst();
-                }
-            } catch (SQLException e) {
-                throw new DAOException(e);
-            }
-        return returnObject;
-    }
 
     @Override
     public Optional<TaggedGiftCertificate> update(TaggedGiftCertificate object) {
         jdbcTemplate.update(
-                updateSqlRequestBuilder(object),
-                object.getName()
+                updateSqlRequestBuilder(object)
         );
-        return jdbcTemplate.query(
-                FIND_CERTIFICATE_BY_ID_SQL_QUERY,
-                new Object[]{object.getId()},
-                this::mapResultSetOneTable
-        ).stream().findFirst();
-    }
-
-    @Override
-    public Optional<TaggedGiftCertificate> update(TaggedGiftCertificate object, Connection connection) throws DAOException {
-        Optional<TaggedGiftCertificate> returnObject;
-
-        try (PreparedStatement statement1 = connection.prepareStatement(updateSqlRequestBuilder(object))) {
-                statement1.executeUpdate();
-            SearchParametersHolder searchParametersHolder = new SearchParametersHolder();
-            searchParametersHolder.setId(object.getId());
-            returnObject = findBy(searchParametersHolder).stream().findFirst();
-            } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-        return returnObject;
+        return findById(object.getId());
     }
 
     @Override
@@ -166,14 +99,14 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
     }
 
     @Override
-    public void deleteById(Long id) throws DAOException {
+    public void deleteById(Long id) {
         jdbcTemplate.update(
                 DELETE_CERTIFICATE_BY_ID_SQL_QUERY,
                 id
         );
     }
 
-    private TaggedGiftCertificate mapResultSetOneTable(ResultSet rs, int rowNum) throws SQLException {
+    private TaggedGiftCertificate mapCertificatesResultSet(ResultSet rs, int rowNum) throws SQLException {
         TaggedGiftCertificate tempCertificate = new TaggedGiftCertificate();
         tempCertificate.setId(rs.getLong("id_cert"));
         tempCertificate.setName(rs.getString("name"));

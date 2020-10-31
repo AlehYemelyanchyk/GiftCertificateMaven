@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
@@ -103,7 +102,7 @@ public class GiftCertificateController {
                                              @RequestParam Optional<String> description,
                                              @RequestParam Optional<Double> price,
                                              @RequestParam Optional<Integer> duration,
-                                             @RequestParam Optional<Set<Tag>> tags) {
+                                             @RequestParam Optional<List<Tag>> tags) {
         TaggedGiftCertificate returnObject;
         TaggedGiftCertificate giftCertificate = new TaggedGiftCertificate();
         giftCertificate.setId(id);

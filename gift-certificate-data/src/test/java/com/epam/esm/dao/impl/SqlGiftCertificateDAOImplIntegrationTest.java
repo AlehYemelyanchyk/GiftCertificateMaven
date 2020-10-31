@@ -75,7 +75,7 @@ class SqlGiftCertificateDAOImplIntegrationTest extends AbstractIntegrationTest {
     void saveTest() throws SQLException, DAOException {
         Connection connection = getConnection();
         List<TaggedGiftCertificate> listBefore = sqlGiftCertificateDAO.findAll();
-        Optional<TaggedGiftCertificate> actualCertificate = sqlGiftCertificateDAO.save(EXPECTED_TAGGED_GIFT_CERTIFICATE, connection);
+        Optional<TaggedGiftCertificate> actualCertificate = sqlGiftCertificateDAO.save(EXPECTED_TAGGED_GIFT_CERTIFICATE);
         List<TaggedGiftCertificate> listAfter = sqlGiftCertificateDAO.findAll();
         assertNotNull(actualCertificate);
         assertNotEquals(listBefore, listAfter);
@@ -87,7 +87,7 @@ class SqlGiftCertificateDAOImplIntegrationTest extends AbstractIntegrationTest {
         Connection connection = getConnection();
         Optional<TaggedGiftCertificate> beforeUpdate = sqlGiftCertificateDAO.findById(TEST_ID);
         EXPECTED_TAGGED_GIFT_CERTIFICATE.setName("New name");
-        Optional<TaggedGiftCertificate> actualCertificate = sqlGiftCertificateDAO.update(EXPECTED_TAGGED_GIFT_CERTIFICATE, connection);
+        Optional<TaggedGiftCertificate> actualCertificate = sqlGiftCertificateDAO.update(EXPECTED_TAGGED_GIFT_CERTIFICATE);
         Optional<TaggedGiftCertificate> afterUpdate = sqlGiftCertificateDAO.findById(TEST_ID);
         assertNotNull(actualCertificate);
         assertNotEquals(beforeUpdate, afterUpdate);
