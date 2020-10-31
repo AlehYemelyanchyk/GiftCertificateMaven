@@ -8,27 +8,24 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+    <packaging>war</packaging>
 
     <properties>
         <jackson.version>2.11.3</jackson.version>
         <javax.servlet.version>3.1.0</javax.servlet.version>
+        <javax.servlet.jsp.version>2.3.3</javax.servlet.jsp.version>
         <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
     </properties>
 
     <artifactId>gift-certificate-web</artifactId>
 
     <dependencies>
+
+
         <dependency>
             <artifactId>gift-certificate-data</artifactId>
             <groupId>com.epam.esm</groupId>
             <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- Spring + Spring REST -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>${spring.version}</version>
         </dependency>
 
         <!-- Jackson for JSON converters -->
@@ -64,7 +61,7 @@
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>javax.servlet.jsp-api</artifactId>
-            <version>2.3.3</version>
+            <version>${javax.servlet.jsp.version}</version>
         </dependency>
 
         <!-- Template engine -->

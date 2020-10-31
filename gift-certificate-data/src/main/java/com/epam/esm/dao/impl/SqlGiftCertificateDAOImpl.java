@@ -1,99 +1,114 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.dao.Constants;
 import com.epam.esm.dao.GiftCertificateDAO;
 import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import com.epam.esm.model.SearchParametersHolder;
 import com.epam.esm.model.TaggedGiftCertificate;
 import com.epam.esm.util.DAOUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-    private final DataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
+
+    private static final String FIND_ALL_CERTIFICATES_SQL_QUERY = "SELECT * FROM certificates";
+    private static final String FIND_CERTIFICATE_BY_ID_SQL_QUERY = "SELECT * FROM certificates " +
+            "WHERE id_cert = ?";
+    private static final String SAVE_CERTIFICATE_SQL_QUERY = "INSERT INTO certificates " +
+            "(name, description, price, create_date, last_update_date, duration) VALUES (?,?,?,?,?,?)";
+    private static final String FIND_LAST_CERTIFICATES_BY_NAME_SQL_QUERY = "SELECT * FROM certificates " +
+            "WHERE name = ? ORDER BY create_date DESC";
+    private static final String DELETE_CERTIFICATES_BY_NAME_SQL_QUERY = "DELETE FROM certificates " +
+            "WHERE name = ?";
+    private static final String DELETE_CERTIFICATE_BY_ID_SQL_QUERY = "DELETE FROM certificates " +
+            "WHERE id_cert = ?";
 
     @Autowired
-    public SqlGiftCertificateDAOImpl(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public SqlGiftCertificateDAOImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public List<TaggedGiftCertificate> findAll() throws DAOException {
-        List<TaggedGiftCertificate> giftCertificates;
-
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(Constants.FIND_ALL_CERTIFICATES_SQL_QUERY)
-        ) {
-            try (ResultSet resultSet = statement.executeQuery()) {
-                giftCertificates = DAOUtils.taggedGiftCertificatesListResultSetHandle(resultSet);
-            }
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
-        return giftCertificates;
+    public List<TaggedGiftCertificate> findAll() {
+        return jdbcTemplate.query(
+                FIND_ALL_CERTIFICATES_SQL_QUERY,
+                this::mapResultSetOneTable
+        );
     }
 
     @Override
-    public List<TaggedGiftCertificate> findBy(SearchParametersHolder searchParametersHolder) throws DAOException {
-        List<TaggedGiftCertificate> returnList;
+    public List<TaggedGiftCertificate> findBy(SearchParametersHolder searchParametersHolder) {
+        Set<TaggedGiftCertificate> taggedGiftCertificatesSet = new LinkedHashSet<>();
+        List<TaggedGiftCertificate> query = jdbcTemplate.query(
+                searchByRequestBuilder(searchParametersHolder),
+                this::mapResultSetTwoTables
+        );
+        return query;
+    }
 
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(searchByRequestBuilder(searchParametersHolder))
-        ) {
-            try (ResultSet resultSet = statement.executeQuery()) {
-                returnList = DAOUtils.taggedGiftCertificatesListTwoTablesResultSetHandle(resultSet);
-            }
-        } catch (Exception e) {
-            throw new DAOException(e);
-        }
-        return returnList;
+    private TaggedGiftCertificate mapResultSetTwoTables(ResultSet rs, int rowNum) throws SQLException {
+        TaggedGiftCertificate tempCertificate = new TaggedGiftCertificate();
+        tempCertificate.setId(rs.getLong("id_cert"));
+        tempCertificate.setName(rs.getString("name"));
+        tempCertificate.setDescription(rs.getString("description"));
+        tempCertificate.setPrice(rs.getDouble("price"));
+        tempCertificate.setCreateDate(LocalDateTime.parse(rs.getString("create_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        tempCertificate.setLastUpdateDate(LocalDateTime.parse(rs.getString("last_update_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        tempCertificate.setDuration(rs.getInt("duration"));
+
+        Tag tempTag = new Tag(
+                rs.getInt("id_tag"),
+                rs.getString("name_tag"));
+
+        tempCertificate.getTags().add(tempTag);
+        return tempCertificate;
     }
 
     @Override
-    public Optional<TaggedGiftCertificate> findById(Long id) throws DAOException {
-        Optional<TaggedGiftCertificate> returnObject;
-
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(Constants.FIND_CERTIFICATE_BY_ID_SQL_QUERY);
-        ) {
-            statement.setLong(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                returnObject = DAOUtils.taggedGiftCertificatesListResultSetHandle(resultSet).stream()
-                        .findFirst();
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
-        return returnObject;
+    public Optional<TaggedGiftCertificate> findById(Long id) {
+        return jdbcTemplate.query(
+                FIND_CERTIFICATE_BY_ID_SQL_QUERY,
+                new Object[]{id},
+                this::mapResultSetOneTable
+        ).stream().findFirst();
     }
 
     @Override
-    public Optional<TaggedGiftCertificate> save(TaggedGiftCertificate object) throws DAOException {
-        return Optional.empty();
+    public Optional<TaggedGiftCertificate> save(TaggedGiftCertificate object) {
+        jdbcTemplate.update(
+                SAVE_CERTIFICATE_SQL_QUERY,
+                object.getName()
+        );
+        return jdbcTemplate.query(
+                FIND_LAST_CERTIFICATES_BY_NAME_SQL_QUERY,
+                new Object[]{object.getName()},
+                this::mapResultSetOneTable
+        ).stream().findFirst();
     }
 
     @Override
     public Optional<TaggedGiftCertificate> save(TaggedGiftCertificate object, Connection connection) throws DAOException {
         Optional<TaggedGiftCertificate> returnObject;
 
-            try (PreparedStatement statement1 = connection.prepareStatement(Constants.SAVE_CERTIFICATE_SQL_QUERY);
-                 PreparedStatement statement2 = connection.prepareStatement(Constants.FIND_LAST_CERTIFICATES_BY_NAME_SQL_QUERY);
+        try (PreparedStatement statement1 = connection.prepareStatement(SAVE_CERTIFICATE_SQL_QUERY);
+             PreparedStatement statement2 = connection.prepareStatement(FIND_LAST_CERTIFICATES_BY_NAME_SQL_QUERY);
             ) {
                 statement1.setString(1, object.getName());
                 statement1.setString(2, object.getDescription());
@@ -109,15 +124,22 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
                             .findFirst();
                 }
             } catch (SQLException e) {
-                LOGGER.error("save transaction failed error: " + e.getMessage());
                 throw new DAOException(e);
             }
         return returnObject;
     }
 
     @Override
-    public Optional<TaggedGiftCertificate> update(TaggedGiftCertificate object) throws DAOException {
-        return Optional.empty();
+    public Optional<TaggedGiftCertificate> update(TaggedGiftCertificate object) {
+        jdbcTemplate.update(
+                updateSqlRequestBuilder(object),
+                object.getName()
+        );
+        return jdbcTemplate.query(
+                FIND_CERTIFICATE_BY_ID_SQL_QUERY,
+                new Object[]{object.getId()},
+                this::mapResultSetOneTable
+        ).stream().findFirst();
     }
 
     @Override
@@ -130,34 +152,37 @@ public class SqlGiftCertificateDAOImpl implements GiftCertificateDAO {
             searchParametersHolder.setId(object.getId());
             returnObject = findBy(searchParametersHolder).stream().findFirst();
             } catch (SQLException e) {
-                LOGGER.error("update transaction failed error: " + e.getMessage());
             throw new DAOException(e);
         }
         return returnObject;
     }
 
     @Override
-    public void delete(TaggedGiftCertificate object) throws DAOException {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(Constants.DELETE_CERTIFICATES_BY_NAME_SQL_QUERY);
-        ) {
-            statement.setString(1, object.getName());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
+    public void delete(TaggedGiftCertificate object) {
+        jdbcTemplate.update(
+                DELETE_CERTIFICATES_BY_NAME_SQL_QUERY,
+                object.getName()
+        );
     }
 
     @Override
     public void deleteById(Long id) throws DAOException {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(Constants.DELETE_CERTIFICATE_BY_ID_SQL_QUERY);
-        ) {
-            statement.setLong(1, id);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
+        jdbcTemplate.update(
+                DELETE_CERTIFICATE_BY_ID_SQL_QUERY,
+                id
+        );
+    }
+
+    private TaggedGiftCertificate mapResultSetOneTable(ResultSet rs, int rowNum) throws SQLException {
+        TaggedGiftCertificate tempCertificate = new TaggedGiftCertificate();
+        tempCertificate.setId(rs.getLong("id_cert"));
+        tempCertificate.setName(rs.getString("name"));
+        tempCertificate.setDescription(rs.getString("description"));
+        tempCertificate.setPrice(rs.getDouble("price"));
+        tempCertificate.setCreateDate(LocalDateTime.parse(rs.getString("create_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        tempCertificate.setLastUpdateDate(LocalDateTime.parse(rs.getString("last_update_date"), DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+        tempCertificate.setDuration(rs.getInt("duration"));
+        return tempCertificate;
     }
 
     private String updateSqlRequestBuilder(GiftCertificate giftCertificate) {

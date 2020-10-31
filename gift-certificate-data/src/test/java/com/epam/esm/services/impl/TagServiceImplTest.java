@@ -13,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -85,13 +84,6 @@ class TagServiceImplTest {
     void saveTest() throws DAOException, ServiceException {
         Mockito.when(tagDAO.save(EXPECTED_TAG, null)).thenReturn(Optional.empty());
         Optional<Tag> actualTag = tagService.save(EXPECTED_TAG);
-        assertEquals(Optional.empty(), actualTag);
-    }
-
-    @Test
-    void updateTest() throws DAOException, ServiceException, SQLException {
-        Mockito.when(tagDAO.update(EXPECTED_TAG, null)).thenReturn(Optional.empty());
-        Optional<Tag> actualTag = tagService.update(EXPECTED_TAG);
         assertEquals(Optional.empty(), actualTag);
     }
 

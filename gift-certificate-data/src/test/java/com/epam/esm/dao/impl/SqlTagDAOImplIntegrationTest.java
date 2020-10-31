@@ -91,15 +91,6 @@ class SqlTagDAOImplIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void updateWithConnectionTest() throws DAOException, SQLException {
-        Connection connection = getConnection();
-        Optional<Tag> optionalTag = sqlTagDAO.update(TEST_TAG_TEST, connection);
-        Tag actualTag = optionalTag.orElse(null);
-        assertNull(actualTag);
-        connection.close();
-    }
-
-    @Test
     void deleteTest() throws DAOException {
         sqlTagDAO.delete(TEST_TAG_RED);
         Optional<Tag> optionalTag = sqlTagDAO.findByName(TEST_TAG_RED.getName());

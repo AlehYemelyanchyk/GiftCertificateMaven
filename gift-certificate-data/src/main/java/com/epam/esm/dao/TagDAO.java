@@ -33,15 +33,4 @@ public interface TagDAO extends CrudDAO<Tag, Integer> {
      * @throws DAOException if a SQLException is thrown from its invoked method.
      */
     Optional<Tag> save(Tag object, Connection connection) throws DAOException;
-
-    /**
-     * Updates a given entity. Use the returned instance for further operations as the update operation might have changed the
-     * entity instance completely.
-     *
-     * @param object must not be {@literal null}.
-     * @param connection must not be {@literal null}.
-     * @return the updated entity or {@literal Optional#empty()} if none returned.
-     * @throws DAOException if a SQLException is thrown from its invoked method.
-     */
-    Optional<Tag> update(Tag object, Connection connection) throws DAOException;
 }

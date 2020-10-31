@@ -1,11 +1,15 @@
 package com.epam.esm.config;
 
-import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -13,6 +17,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 @Configuration
+@EnableTransactionManagement
 @ComponentScan({"com.epam.esm"})
 public class SpringDataConfig {
 
@@ -25,23 +30,27 @@ public class SpringDataConfig {
     private String dbUrl;
     private String dbUsername;
     private String dbPassword;
-    private int initialSize;
-    private int maxIdle;
-    private Long maxWait;
 
     @Bean
     public DataSource getDataSource() {
         initProperties();
-        BasicDataSource dataSource = new BasicDataSource();
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+
         dataSource.setDriverClassName(driverClassName);
         dataSource.setUrl(dbUrl);
         dataSource.setUsername(dbUsername);
         dataSource.setPassword(dbPassword);
-        dataSource.setInitialSize(initialSize);
-        dataSource.setMaxIdle(maxIdle);
-        dataSource.setMaxWait(maxWait);
-
         return dataSource;
+    }
+
+    @Bean
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
+
+    @Bean
+    public TransactionManager transactionManager() {
+        return new DataSourceTransactionManager(getDataSource());
     }
 
     private void initProperties() {
@@ -53,12 +62,12 @@ public class SpringDataConfig {
             driverClassName = properties.getProperty("driverClassName");
             dbUsername = properties.getProperty("dbUsername");
             dbPassword = properties.getProperty("dbPassword");
-            initialSize = Integer.parseInt(properties.getProperty("initialSize"));
-            maxIdle = Integer.parseInt(properties.getProperty("maxIdle"));
-            maxWait = Long.valueOf(properties.getProperty("maxWait"));
         } catch (IOException e) {
             LOGGER.error("initProperties error: " + e);
             throw new Error("Properties has not been loaded", e);
         }
     }
 }
+
+
+

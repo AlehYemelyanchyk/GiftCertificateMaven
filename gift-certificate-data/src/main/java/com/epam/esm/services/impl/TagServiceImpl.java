@@ -7,6 +7,7 @@ import com.epam.esm.services.TagService;
 import com.epam.esm.services.exceptions.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,7 @@ import java.util.Optional;
 @Service
 public class TagServiceImpl implements TagService {
 
-    private TagDAO tagDAO;
+    private final TagDAO tagDAO;
 
     @Autowired
     public TagServiceImpl(TagDAO tagDAO) {
@@ -39,6 +40,7 @@ public class TagServiceImpl implements TagService {
         }
     }
 
+    @Transactional
     @Override
     public Optional<Tag> save(Tag object) throws ServiceException {
         try {

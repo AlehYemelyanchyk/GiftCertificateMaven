@@ -55,7 +55,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public Optional<TaggedGiftCertificate> save(TaggedGiftCertificate object) throws ServiceException {
         try {
-            return daoManager.save(object);
+            return giftCertificateDAO.save(object);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
