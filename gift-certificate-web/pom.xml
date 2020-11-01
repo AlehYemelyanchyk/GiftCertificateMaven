@@ -8,7 +8,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <packaging>war</packaging>
+<!--    <packaging>war</packaging>-->
 
     <properties>
         <jackson.version>2.11.3</jackson.version>
@@ -20,8 +20,6 @@
     <artifactId>gift-certificate-web</artifactId>
 
     <dependencies>
-
-
         <dependency>
             <artifactId>gift-certificate-data</artifactId>
             <groupId>com.epam.esm</groupId>
@@ -77,5 +75,4 @@
             <version>${thymeleaf.version}</version>
         </dependency>
     </dependencies>
-
 </project>
