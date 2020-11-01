@@ -47,7 +47,7 @@ class TagServiceImplTest {
     }
 
     @Test
-    void findAllExceptionTest() throws DAOException {
+    void findAllExceptionTest(){
         Mockito.when(tagDAO.findAll()).thenThrow(DAOException.class);
         assertThrows(ServiceException.class, () -> {
             tagService.findAll();

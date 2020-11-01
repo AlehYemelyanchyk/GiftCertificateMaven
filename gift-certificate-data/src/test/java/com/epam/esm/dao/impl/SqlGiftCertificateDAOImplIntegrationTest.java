@@ -66,13 +66,13 @@ class SqlGiftCertificateDAOImplIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void findByIdTest() throws DAOException {
+    void findByIdTest() {
         Optional<TaggedGiftCertificate> actualCertificate = sqlGiftCertificateDAO.findById(TEST_ID);
         assertEquals(EXPECTED_OPTIONAL_GIFT_CERTIFICATE, actualCertificate);
     }
 
     @Test
-    void saveTest() throws SQLException, DAOException {
+    void saveTest() throws SQLException{
         Connection connection = getConnection();
         List<TaggedGiftCertificate> listBefore = sqlGiftCertificateDAO.findAll();
         Optional<TaggedGiftCertificate> actualCertificate = sqlGiftCertificateDAO.save(EXPECTED_TAGGED_GIFT_CERTIFICATE);
@@ -83,7 +83,7 @@ class SqlGiftCertificateDAOImplIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void updateTest() throws SQLException, DAOException {
+    void updateTest() throws SQLException{
         Connection connection = getConnection();
         Optional<TaggedGiftCertificate> beforeUpdate = sqlGiftCertificateDAO.findById(TEST_ID);
         EXPECTED_TAGGED_GIFT_CERTIFICATE.setName("New name");
@@ -95,14 +95,14 @@ class SqlGiftCertificateDAOImplIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void deleteTest() throws DAOException {
+    void deleteTest() {
         sqlGiftCertificateDAO.delete(EXPECTED_TAGGED_GIFT_CERTIFICATE);
         Optional<TaggedGiftCertificate> actualCertificate = sqlGiftCertificateDAO.findById(EXPECTED_TAGGED_GIFT_CERTIFICATE.getId());
         assertNull(actualCertificate.orElse(null));
     }
 
     @Test
-    void deleteByIdTest() throws DAOException {
+    void deleteByIdTest() {
         sqlGiftCertificateDAO.deleteById(TEST_ID);
         Optional<TaggedGiftCertificate> actualCertificate = sqlGiftCertificateDAO.findById(EXPECTED_TAGGED_GIFT_CERTIFICATE.getId());
         assertNull(actualCertificate.orElse(null));

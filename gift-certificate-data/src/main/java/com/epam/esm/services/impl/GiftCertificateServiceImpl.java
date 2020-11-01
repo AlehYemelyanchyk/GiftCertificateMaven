@@ -38,7 +38,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public List<TaggedGiftCertificate> findAll() throws ServiceException {
         List<TaggedGiftCertificate> taggedGiftCertificates = giftCertificateDAO.findAll();
-        taggedGiftCertificates.forEach(this::getAllTags);
+        taggedGiftCertificates.forEach(this::populateAllTags);
         return taggedGiftCertificates;
     }
 
@@ -46,7 +46,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public List<TaggedGiftCertificate> findBy(SearchParametersHolder searchParametersHolder) throws ServiceException {
         List<TaggedGiftCertificate> taggedGiftCertificates = giftCertificateDAO.findBy(searchParametersHolder);
-        taggedGiftCertificates.forEach(this::getAllTags);
+        taggedGiftCertificates.forEach(this::populateAllTags);
         return taggedGiftCertificates;
     }
 
@@ -54,7 +54,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
     @Override
     public Optional<TaggedGiftCertificate> findById(Long id) throws ServiceException {
         Optional<TaggedGiftCertificate> taggedGiftCertificate = giftCertificateDAO.findById(id);
-        taggedGiftCertificate.ifPresent(this::getAllTags);
+        taggedGiftCertificate.ifPresent(this::populateAllTags);
         return taggedGiftCertificate;
     }
 
@@ -74,7 +74,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
                 }
                 savedTag.ifPresent(value -> taggedGiftCertificateDAO.save(taggedGiftCertificate, value));
             });
-            optionalTaggedGiftCertificate.ifPresent(this::getAllTags);
+            optionalTaggedGiftCertificate.ifPresent(this::populateAllTags);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
@@ -102,7 +102,7 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
-        optionalTaggedGiftCertificate.ifPresent(this::getAllTags);
+        optionalTaggedGiftCertificate.ifPresent(this::populateAllTags);
         return optionalTaggedGiftCertificate;
     }
 
@@ -116,8 +116,8 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         giftCertificateDAO.deleteById(id);
     }
 
-    private void getAllTags(TaggedGiftCertificate taggedGiftCertificates) {
-        List<Tag> tags = taggedGiftCertificateDAO.findByGiftCertificateId(taggedGiftCertificates.getId());
-        taggedGiftCertificates.setTags(tags);
+    private void populateAllTags(TaggedGiftCertificate taggedGiftCertificate) {
+        List<Tag> tags = taggedGiftCertificateDAO.findByGiftCertificateId(taggedGiftCertificate.getId());
+        taggedGiftCertificate.setTags(tags);
     }
 }
