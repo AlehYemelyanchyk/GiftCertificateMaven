@@ -64,21 +64,25 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         Optional<TaggedGiftCertificate> optionalTaggedGiftCertificate;
         try {
             optionalTaggedGiftCertificate = giftCertificateDAO.save(object);
-            TaggedGiftCertificate taggedGiftCertificate = optionalTaggedGiftCertificate.orElseThrow(() ->
-                    new DAOException("Failed to save the certificate."));
-            List<Tag> passedTags = object.getTags();
-            passedTags.forEach(tag -> {
-                Optional<Tag> savedTag = tagDAO.findByName(tag.getName());
-                if (!savedTag.isPresent()) {
-                    savedTag = tagDAO.save(tag);
-                }
-                savedTag.ifPresent(value -> taggedGiftCertificateDAO.save(taggedGiftCertificate, value));
-            });
+            savePassedTags(optionalTaggedGiftCertificate, object.getTags());
             optionalTaggedGiftCertificate.ifPresent(this::populateAllTags);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
         return optionalTaggedGiftCertificate;
+    }
+
+    private void savePassedTags(Optional<TaggedGiftCertificate> optionalTaggedGiftCertificate,
+                                List<Tag> passedTags) throws DAOException {
+        TaggedGiftCertificate taggedGiftCertificate = optionalTaggedGiftCertificate.orElseThrow(() ->
+                new DAOException("Failed to save the certificate."));
+        passedTags.forEach(tag -> {
+            Optional<Tag> savedTag = tagDAO.findByName(tag.getName());
+            if (!savedTag.isPresent()) {
+                savedTag = tagDAO.save(tag);
+            }
+            savedTag.ifPresent(value -> taggedGiftCertificateDAO.save(taggedGiftCertificate, value));
+        });
     }
 
     @Transactional
@@ -87,22 +91,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         Optional<TaggedGiftCertificate> optionalTaggedGiftCertificate;
         try {
             optionalTaggedGiftCertificate = giftCertificateDAO.update(object);
-            TaggedGiftCertificate taggedGiftCertificate = optionalTaggedGiftCertificate.orElseThrow(() ->
-                    new DAOException("Failed to save the certificate."));
-            List<Tag> passedTags = object.getTags();
-            if (passedTags != null) {
-                passedTags.forEach(tag -> {
-                    Optional<Tag> savedTag = tagDAO.findByName(tag.getName());
-                    if (!savedTag.isPresent()) {
-                        savedTag = tagDAO.save(tag);
-                    }
-                    savedTag.ifPresent(value -> taggedGiftCertificateDAO.save(taggedGiftCertificate, value));
-                });
-            }
+            savePassedTags(optionalTaggedGiftCertificate, object.getTags());
+            optionalTaggedGiftCertificate.ifPresent(this::populateAllTags);
         } catch (DAOException e) {
             throw new ServiceException(e);
         }
-        optionalTaggedGiftCertificate.ifPresent(this::populateAllTags);
         return optionalTaggedGiftCertificate;
     }
 

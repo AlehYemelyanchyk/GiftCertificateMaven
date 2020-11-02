@@ -69,7 +69,7 @@ public class SqlTagDAOImpl implements TagDAO {
     public void delete(Tag object) {
         jdbcTemplate.update(
                     DELETE_TAGS_BY_NAME_SQL_QUERY,
-                    object.getId()
+                    object.getName()
         );
     }
 

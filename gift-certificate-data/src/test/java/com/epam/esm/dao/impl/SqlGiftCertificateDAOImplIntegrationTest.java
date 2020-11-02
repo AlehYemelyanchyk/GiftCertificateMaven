@@ -2,7 +2,6 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.config.SpringTestDataConfig;
 import com.epam.esm.dao.GiftCertificateDAO;
-import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.model.SearchParametersHolder;
 import com.epam.esm.model.TaggedGiftCertificate;
 import org.junit.jupiter.api.AfterEach;
@@ -60,7 +59,7 @@ class SqlGiftCertificateDAOImplIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void findAllTest() throws DAOException {
+    void findAllTest() {
         List<TaggedGiftCertificate> actualList = sqlGiftCertificateDAO.findAll();
         assertNotNull(actualList);
     }

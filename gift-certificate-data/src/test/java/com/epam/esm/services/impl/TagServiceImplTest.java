@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -37,7 +36,7 @@ class TagServiceImplTest {
     private TagDAO tagDAO;
 
     @Test
-    void findAllTest() throws DAOException, ServiceException {
+    void findAllTest() throws ServiceException {
         List<Tag> expectedList = new ArrayList<>();
         expectedList.add(EXPECTED_TAG);
 
@@ -47,75 +46,35 @@ class TagServiceImplTest {
     }
 
     @Test
-    void findAllExceptionTest(){
-        Mockito.when(tagDAO.findAll()).thenThrow(DAOException.class);
-        assertThrows(ServiceException.class, () -> {
-            tagService.findAll();
-        });
-    }
-
-    @Test
-    void findByIdTest() throws DAOException, ServiceException {
+    void findByIdTest() throws ServiceException {
         Mockito.when(tagDAO.findById(TEST_ID)).thenReturn(EXPECTED_OPTIONAL_TAG);
         Optional<Tag> actualTag = tagService.findById(TEST_ID);
         assertEquals(EXPECTED_OPTIONAL_TAG, actualTag);
     }
 
     @Test
-    void findByIdExceptionTest() throws DAOException {
-        Mockito.when(tagDAO.findById(TEST_ID)).thenThrow(DAOException.class);
-        assertThrows(ServiceException.class, () -> tagService.findById(TEST_ID));
-    }
-
-    @Test
-    void findByNameTest() throws DAOException, ServiceException {
+    void findByNameTest() throws ServiceException {
         Mockito.when(tagDAO.findByName(TEST_NAME)).thenReturn(EXPECTED_OPTIONAL_TAG);
         Optional<Tag> actualTag = tagService.findByName(TEST_NAME);
         assertEquals(EXPECTED_OPTIONAL_TAG, actualTag);
     }
 
     @Test
-    void findByNameExceptionTest() throws DAOException {
-        Mockito.when(tagDAO.findByName(TEST_NAME)).thenThrow(DAOException.class);
-        assertThrows(ServiceException.class, () -> tagService.findByName(TEST_NAME));
-    }
-
-    @Test
-    void saveTest() throws DAOException, ServiceException {
+    void saveTest() throws ServiceException {
         Mockito.when(tagDAO.save(EXPECTED_TAG)).thenReturn(Optional.empty());
         Optional<Tag> actualTag = tagService.save(EXPECTED_TAG);
         assertEquals(Optional.empty(), actualTag);
     }
 
     @Test
-    void deleteInvocationTest() throws ServiceException, DAOException {
+    void deleteInvocationTest() throws ServiceException{
         tagService.delete(EXPECTED_TAG);
         Mockito.verify(tagDAO).delete(EXPECTED_TAG);
     }
 
     @Test
-    void deleteExceptionTest() throws DAOException {
-        Mockito.doThrow(TEST_EXCEPTION).when(tagDAO).delete(EXPECTED_TAG);
-        try {
-            tagService.delete(EXPECTED_TAG);
-        } catch (ServiceException e) {
-            assertEquals(TEST_EXCEPTION, e.getCause());
-        }
-    }
-
-    @Test
-    void deleteById() throws ServiceException, DAOException {
+    void deleteById() throws ServiceException{
         tagService.deleteById(TEST_ID);
         Mockito.verify(tagDAO).deleteById(TEST_ID);
-    }
-
-    @Test
-    void deleteByIdExceptionTest() throws DAOException {
-        Mockito.doThrow(TEST_EXCEPTION).when(tagDAO).deleteById(TEST_ID);
-        try {
-            tagService.deleteById(TEST_ID);
-        } catch (ServiceException e) {
-            assertEquals(TEST_EXCEPTION, e.getCause());
-        }
     }
 }

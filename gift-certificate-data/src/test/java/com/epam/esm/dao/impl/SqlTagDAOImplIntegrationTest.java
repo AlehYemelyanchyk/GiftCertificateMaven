@@ -2,7 +2,6 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.config.SpringTestDataConfig;
 import com.epam.esm.dao.TagDAO;
-import com.epam.esm.dao.exceptions.DAOException;
 import com.epam.esm.entity.Tag;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class SqlTagDAOImplIntegrationTest extends AbstractIntegrationTest {
 
     private final static Tag EXPECTED_TAG = new Tag(1, "red");
-    private final static Tag TEST_TAG_RED = new Tag(1, "red");
     private final static Tag TEST_TAG_TEST = new Tag( "test");
 
     @Autowired
@@ -42,27 +40,27 @@ class SqlTagDAOImplIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void findAllTest() throws DAOException {
+    void findAllTest() {
         List<Tag> actualList = sqlTagDAO.findAll();
         assertNotNull(actualList);
     }
 
     @Test
-    void findByIdTest() throws DAOException {
+    void findByIdTest() {
         Optional<Tag> optionalTag = sqlTagDAO.findById(EXPECTED_TAG.getId());
         Tag actualTag = optionalTag.orElse(null);
         assertEquals(EXPECTED_TAG, actualTag);
     }
 
     @Test
-    void findByNameTest() throws DAOException {
+    void findByNameTest() {
         Optional<Tag> optionalTag = sqlTagDAO.findByName(EXPECTED_TAG.getName());
         Tag actualTag = optionalTag.orElse(null);
         assertEquals(EXPECTED_TAG, actualTag);
     }
 
     @Test
-    void saveTest() throws DAOException, SQLException {
+    void saveTest() throws SQLException {
         Connection connection = getConnection();
         sqlTagDAO.save(TEST_TAG_TEST);
         Optional<Tag> optionalTag = sqlTagDAO.findByName(TEST_TAG_TEST.getName());
@@ -72,7 +70,7 @@ class SqlTagDAOImplIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void saveWithConnectionTest() throws DAOException, SQLException {
+    void saveWithConnectionTest() throws SQLException {
         Connection connection = getConnection();
         sqlTagDAO.save(TEST_TAG_TEST);
         Optional<Tag> optionalTag = sqlTagDAO.findByName(TEST_TAG_TEST.getName());
@@ -82,7 +80,7 @@ class SqlTagDAOImplIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void updateTest() throws DAOException, SQLException {
+    void updateTest() throws SQLException {
         Connection connection = getConnection();
         Optional<Tag> optionalTag = sqlTagDAO.update(TEST_TAG_TEST);
         Tag actualTag = optionalTag.orElse(null);
@@ -91,17 +89,17 @@ class SqlTagDAOImplIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void deleteTest() throws DAOException {
-        sqlTagDAO.delete(TEST_TAG_RED);
-        Optional<Tag> optionalTag = sqlTagDAO.findByName(TEST_TAG_RED.getName());
+    void deleteTest() {
+        sqlTagDAO.delete(EXPECTED_TAG);
+        Optional<Tag> optionalTag = sqlTagDAO.findByName(EXPECTED_TAG.getName());
         Tag actualTag = optionalTag.orElse(null);
         assertNull(actualTag);
     }
 
     @Test
-    void deleteByIdTest() throws DAOException {
-        sqlTagDAO.deleteById(TEST_TAG_RED.getId());
-        Optional<Tag> optionalTag = sqlTagDAO.findByName(TEST_TAG_RED.getName());
+    void deleteByIdTest() {
+        sqlTagDAO.deleteById(EXPECTED_TAG.getId());
+        Optional<Tag> optionalTag = sqlTagDAO.findByName(EXPECTED_TAG.getName());
         Tag actualTag = optionalTag.orElse(null);
         assertNull(actualTag);
     }
