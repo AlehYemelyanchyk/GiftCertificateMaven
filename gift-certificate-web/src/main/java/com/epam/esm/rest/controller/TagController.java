@@ -57,7 +57,7 @@ public class TagController {
         try {
             Optional<Tag> optionalTag = tagService.findById(id);
             returnObject = optionalTag.orElseThrow(() ->
-                    new ResourceNotFoundException("Tag (id = " + id + ") not found."));
+                    new ResourceNotFoundException("Tag (id = " + id + ")"));
         } catch (ServiceException e) {
             LOGGER.error("findById error: " + e.getMessage());
             throw new RuntimeException();
@@ -71,7 +71,7 @@ public class TagController {
         try {
             Optional<Tag> optionalTag = tagService.findByName(name);
             returnObject = optionalTag.orElseThrow(() ->
-                    new ResourceNotFoundException("Tag (name = " + name + ") not found."));
+                    new ResourceNotFoundException("Tag (name = " + name + ")"));
         } catch (ServiceException e) {
             LOGGER.error("findByName error: " + e.getMessage());
             throw new RuntimeException();
@@ -85,7 +85,7 @@ public class TagController {
             tagService.delete(tag);
         } catch (ServiceException e) {
             LOGGER.error("delete error: " + e.getMessage());
-            throw new ResourceNotFoundException("Tag (tag = " + tag.getName() + ") not found.");
+            throw new ResourceNotFoundException("Tag (tag = " + tag.getName() + ")");
         }
     }
 
@@ -95,7 +95,7 @@ public class TagController {
             tagService.deleteById(id);
         } catch (ServiceException e) {
             LOGGER.error("delete error: " + e.getMessage());
-            throw new ResourceNotFoundException("Tag (id = " + id + ") not found.");
+            throw new ResourceNotFoundException("Tag (id = " + id + ")");
         }
     }
 }

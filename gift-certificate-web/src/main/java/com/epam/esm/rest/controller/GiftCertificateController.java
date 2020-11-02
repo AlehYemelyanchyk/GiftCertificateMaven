@@ -59,7 +59,7 @@ public class GiftCertificateController {
         try {
             Optional<TaggedGiftCertificate> optionalGiftCertificate = giftCertificateService.findById(id);
             returnObject = optionalGiftCertificate.orElseThrow(() ->
-                    new ResourceNotFoundException("Tag (id = " + id + ") not found."));
+                    new ResourceNotFoundException("Gift Certificate (id = " + id + ")"));
         } catch (ServiceException e) {
             LOGGER.error("findById error: " + e.getMessage());
             throw new RuntimeException();
@@ -91,7 +91,7 @@ public class GiftCertificateController {
             throw new RuntimeException();
         }
         if (returnObject.isEmpty()) {
-            throw new ResourceNotFoundException("Certificates not found.");
+            throw new ResourceNotFoundException("Certificates");
         }
         return returnObject;
     }
@@ -116,7 +116,7 @@ public class GiftCertificateController {
             Optional<TaggedGiftCertificate> giftCertificateOptional =
                     giftCertificateService.update(giftCertificate);
             returnObject = giftCertificateOptional.orElseThrow(() ->
-                    new ResourceNotFoundException("Gift Certificate (Gift Certificate = " + name + ") not found."));
+                    new ResourceNotFoundException("Gift Certificate (Gift Certificate = " + name + ")"));
         } catch (ServiceException e) {
             LOGGER.error("findById error: " + e.getMessage());
             throw new RuntimeException();
@@ -130,7 +130,7 @@ public class GiftCertificateController {
             giftCertificateService.deleteById(id);
         } catch (ServiceException e) {
             LOGGER.error("delete error: " + e.getMessage());
-            throw new ResourceNotFoundException("Gift Certificate (id = " + id + ") not found.");
+            throw new ResourceNotFoundException("Gift Certificate (id = " + id + ")");
         }
     }
 }
